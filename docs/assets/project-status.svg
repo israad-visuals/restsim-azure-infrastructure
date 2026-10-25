@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="218" viewBox="0 0 1200 218" role="img" aria-labelledby="title description">
+  <title id="title">RestSim project progress</title>
+  <desc id="description">Architecture complete. Production Terraform validated locally. Azure deployment is the next milestone. Operational verification follows deployment.</desc>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; }
+    .label { font-size: 19px; font-weight: 700; fill: #0e1b2e; text-anchor: middle; }
+    .status { font-size: 15px; fill: #536576; text-anchor: middle; }
+    .halo { opacity: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .halo { animation: milestone 2.4s ease-out 2; transform-origin: 760px 107px; }
+    }
+    @keyframes milestone {
+      0% { opacity: .32; transform: scale(.85); }
+      100% { opacity: 0; transform: scale(1.3); }
+    }
+  </style>
+  <rect x="1" y="1" width="1198" height="216" rx="18" fill="#f8fafc" stroke="#ddf8ee" stroke-width="2"/>
+  <text x="32" y="40" font-size="18" font-weight="700" fill="#0e1b2e">Project progress</text>
+  <rect x="922" y="19" width="246" height="34" rx="17" fill="#ddf8ee"/>
+  <text x="1045" y="41" font-size="14" font-weight="700" fill="#007e53" text-anchor="middle">NEXT · AZURE DEPLOYMENT</text>
+  <path d="M120 107H1080" fill="none" stroke="#d4dfe5" stroke-width="3"/>
+  <path d="M120 107H440" fill="none" stroke="#00975f" stroke-width="3"/>
+  <path d="M458 107H742" fill="none" stroke="#83c9af" stroke-width="2" stroke-dasharray="5 7"/>
+  <circle cx="120" cy="107" r="18" fill="#007e53"/>
+  <path d="m112 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="440" cy="107" r="18" fill="#007e53"/>
+  <path d="m432 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="halo" cx="760" cy="107" r="29" fill="#00ad6b"/>
+  <circle cx="760" cy="107" r="18" fill="#ddf8ee" stroke="#007e53" stroke-width="2"/>
+  <circle cx="760" cy="107" r="6" fill="#007e53"/>
+  <circle cx="1080" cy="107" r="18" fill="#f8fafc" stroke="#b7c7d1" stroke-width="2"/>
+  <circle cx="1080" cy="107" r="5" fill="#b7c7d1"/>
+  <text class="label" x="120" y="158">Architecture</text>
+  <text class="status" x="120" y="183">Complete</text>
+  <text class="label" x="440" y="158">Terraform</text>
+  <text class="status" x="440" y="183">Validated locally</text>
+  <text class="label" x="760" y="158">Azure deployment</text>
+  <text class="status" x="760" y="183">Next milestone</text>
+  <text class="label" x="1080" y="158">Operational checks</text>
+  <text class="status" x="1080" y="183">Upcoming</text>
+</svg>
