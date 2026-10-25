@@ -18,13 +18,13 @@ RestSim runs on one VPS to keep costs low, but relying on one server creates a r
 
 ## My contribution
 
-I studied RestSim's current infrastructure and application requirements, then researched how Azure could improve availability, security and day-to-day operations. I used those findings to choose the cloud services and develop the infrastructure-as-code design, balancing RestSim's needs against cost and avoiding resources that did not serve a clear purpose.
+I studied RestSim's current infrastructure and researched improvements based on its application requirements. I turned those requirements into an Azure architecture and production Terraform configuration, focusing on reducing dependence on one server, protecting application data and making infrastructure changes repeatable without unnecessary cost.
 
-- **Architecture and cost:** I defined the landing zone, resource groups and environment separation, then selected services for availability, scaling and shared data. I kept development smaller and reserved the additional availability resources for the production design.
-- **Networking and security:** I mapped customer traffic and private service connections, including subnets, NSG rules, private DNS, managed identities and Key Vault access.
-- **Infrastructure as code:** I translated the design into production Terraform covering networking, compute, data services, security, monitoring and backups.
-- **Delivery and operations:** I designed the Azure release path around RestSim's existing CI checks, with versioned packages, staging, controlled rollout and recovery.
-- **Design documentation:** I created six draw.io diagrams and explained the requirements, service choices and trade-offs behind each design.
+- **Availability and cost:** I designed a multi-instance web tier with VMSS and availability zones to address the single-server failure risk and growing traffic. I kept development smaller instead of duplicating the full production footprint.
+- **Private access and shared data:** I separated public traffic from databases, files and secrets, with private connections and workload identities. Shared data services let the design replace web VMs without tying persistent records, uploads or sessions to one instance.
+- **Repeatable infrastructure:** I translated the architecture into version-controlled Terraform, giving the project a reviewable configuration for networking, compute, data, security, monitoring and backups.
+- **Release consistency and recovery:** I designed a single-package release path around the existing CI checks, with staging, exact version pins and controlled rollout. The design addresses version differences between instances and includes a path to restore a previous compatible release.
+- **Engineering handover:** I created six draw.io diagrams and supporting explanations so another engineer can trace traffic, understand service choices and connect the architecture to the Terraform implementation.
 
 <details>
 <summary>View the live RestSim product</summary>
