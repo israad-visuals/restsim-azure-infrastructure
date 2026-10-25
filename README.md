@@ -1,7 +1,5 @@
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
 
-![Project progress: architecture complete; production Terraform validated locally; Azure deployment next; operational checks upcoming.](docs/assets/project-status.svg)
-
 **Terraform · Azure Networking · High Availability · Security · CI/CD · Monitoring**
 
 [RestSim](https://restsim.com) is a travel eSIM platform that helps travelers stay connected abroad with mobile data, calls and SMS, depending on the plan. Customers can browse destinations, buy plans and manage their eSIMs through the website and mobile apps. It started with a small user base and now serves a growing number of users.
@@ -69,3 +67,5 @@ The live service stays on its existing VPS. Azure testing uses synthetic data an
 1. Deploy a small, isolated scope and check connectivity, access controls, logs and alerts.
 2. Test application deployment, shared sessions and files, scaling and recovery.
 3. Record results and costs before considering any future production migration.
+
+![Project progress: architecture complete; production Terraform validated locally; Azure deployment next; operational checks upcoming.](docs/assets/project-status.svg)
