@@ -4,7 +4,7 @@
 
 RestSim needs to grow beyond a single application server without exposing its database, files or secrets to customers. I separated the public entry point, application compute and private dependencies so each connection has a clear purpose.
 
-![RestSim production network topology](02-production-network.png)
+[![RestSim production network topology](02-production-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## How a customer request moves through the design
 

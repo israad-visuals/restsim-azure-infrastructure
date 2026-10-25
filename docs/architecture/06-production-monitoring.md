@@ -4,7 +4,7 @@
 
 RestSim already has server-health monitoring. Moving to several application instances and managed services adds more places where a request can fail. I chose a central Azure monitoring design to connect application errors, Linux events and service health instead of treating each server as a separate view.
 
-![RestSim production monitoring design](06-production-monitoring.png)
+[![RestSim production monitoring design](06-production-monitoring.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=ZR1PCFiNJjQxqDGBOhbM#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## Why I chose each monitoring component
 

@@ -4,7 +4,7 @@
 
 As RestSim's infrastructure grows beyond one server, changes need to be understandable and repeatable. I chose Terraform to describe the Azure resources in code and designed a separate infrastructure pipeline so network or storage changes do not become mixed with application releases.
 
-![RestSim Terraform infrastructure CI/CD design](05-terraform-cicd.png)
+[![RestSim Terraform infrastructure CI/CD design](05-terraform-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## Why I chose these controls
 

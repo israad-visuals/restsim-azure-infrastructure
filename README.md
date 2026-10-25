@@ -24,7 +24,7 @@ I started with the landing zone to map where resources belong before writing Ter
 
 ![Azure services in the target design: Azure Virtual Network, VM Scale Sets, Key Vault and Azure Monitor](docs/assets/azure/service-overview.jpg)
 
-![RestSim high-level Azure landing-zone design](docs/architecture/01-landing-zone.png)
+[![RestSim high-level Azure landing-zone design](docs/architecture/01-landing-zone.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=_U4szGZBWyCFBpTj2Gg4#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 Production uses multiple application instances with shared data services and a separate background worker. Development gives developers an isolated, smaller environment to test and stage application changes before a production release. Managed identities, Key Vault and central monitoring support both access control and operations.
 
@@ -32,7 +32,7 @@ Production uses multiple application instances with shared data services and a s
 
 ## Architecture diagrams
 
-[Open the six-page design in draw.io](https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Editable draw.io file](docs/architecture/RestSim-Azure-Architecture.drawio)
+[View the six-page architecture](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 | Diagram | What it shows | Design guide |
 | --- | --- | --- |
@@ -60,7 +60,7 @@ The live service stays on its existing VPS. Azure testing uses synthetic data an
 
 ## Production network
 
-![RestSim production network topology](docs/architecture/02-production-network.png)
+[![RestSim production network topology](docs/architecture/02-production-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 Customer traffic reaches Cloudflare, then Standard Load Balancer and a healthy web instance. Apache handles the origin TLS connection. The app and worker reach PostgreSQL through its delegated subnet, while Files, Redis and Key Vault use private endpoints. Separate network rules control these paths; the data services do not need public application-facing endpoints.
 
@@ -70,7 +70,7 @@ Customer traffic reaches Cloudflare, then Standard Load Balancer and a healthy w
 
 ## Development network
 
-![RestSim development network topology](docs/architecture/03-development-network.png)
+[![RestSim development network topology](docs/architecture/03-development-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 I designed development as the developers' environment for testing and staging application changes before a production release. It is isolated from production, with separate networking, data and credentials. Developers access the staging URL through OAuth2 Proxy and Microsoft Entra ID. One VM keeps the environment smaller, while the database, files and secrets use private connections.
 
@@ -80,7 +80,7 @@ I designed development as the developers' environment for testing and staging ap
 
 ## Application CI/CD
 
-![RestSim application CI/CD and release design](docs/architecture/04-application-cicd.png)
+[![RestSim application CI/CD and release design](docs/architecture/04-application-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 The release path starts with RestSim's existing RQOS checks and binds a Linux package to an exact source commit and version. That package passes through private storage, Compute Gallery and staging before controlled VMSS rollout. Readiness checks can stop a release, and the background worker has a separate handover to keep one scheduler owner.
 
@@ -90,7 +90,7 @@ The release path starts with RestSim's existing RQOS checks and binds a Linux pa
 
 ## Terraform CI/CD
 
-![RestSim Terraform infrastructure CI/CD design](docs/architecture/05-terraform-cicd.png)
+[![RestSim Terraform infrastructure CI/CD design](docs/architecture/05-terraform-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 Infrastructure changes move from pull-request checks to development validation and a separate production plan review. Production applies the saved plan that was reviewed. Azure Blob holds separate environment state, while GitHub OIDC provides scoped Azure access. Infrastructure changes and application releases have separate responsibilities.
 
@@ -100,7 +100,7 @@ Infrastructure changes move from pull-request checks to development validation a
 
 ## Production monitoring
 
-![RestSim production monitoring design](docs/architecture/06-production-monitoring.png)
+[![RestSim production monitoring design](docs/architecture/06-production-monitoring.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=ZR1PCFiNJjQxqDGBOhbM#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 I designed central monitoring to trace RestSim application failures across web instances and managed dependencies. Application Insights provides request and dependency telemetry, while Linux logs and Azure diagnostics feed Log Analytics. I defined metric and Resource Health alerts for operational notifications, with retention and ingestion limits to manage log volume and cost.
 

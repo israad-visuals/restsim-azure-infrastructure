@@ -2,7 +2,7 @@
 
 [Project overview](../../README.md)
 
-[Open designs in draw.io](https://app.diagrams.net/#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Editable source](RestSim-Azure-Architecture.drawio)
+[View architecture diagrams](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 These pages explain the problems behind the Azure design, why I chose each component and the improvement it is intended to provide. Each page includes its diagram alongside the explanation.
 

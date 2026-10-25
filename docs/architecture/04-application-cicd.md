@@ -4,7 +4,7 @@
 
 Deploying to one VPS is different from keeping several web instances and a worker on the correct version. I designed the Azure release extension around RestSim's existing GitHub Actions and RQOS checks, with one versioned package moving through staging and controlled deployment.
 
-![RestSim application CI/CD and recovery design](04-application-cicd.png)
+[![RestSim application CI/CD and recovery design](04-application-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## Why I chose each release component
 

@@ -4,7 +4,7 @@
 
 I designed development as the developers' environment for testing and staging RestSim application changes before a production release. It is isolated from production, with separate networking, data, credentials and access controls. A smaller workload keeps routine development costs lower, while a protected staging URL gives the development team access to the application.
 
-![RestSim development network topology](03-development-network.png)
+[![RestSim development network topology](03-development-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## How developers reach the application
 

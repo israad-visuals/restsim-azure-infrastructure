@@ -4,7 +4,7 @@
 
 RestSim currently runs on one VPS. That kept the initial cost low, but growing usage makes availability, scaling and clearer infrastructure management more important. I designed the landing zone first to show where each part belongs and how the Azure environment supports those needs.
 
-![RestSim high-level Azure landing zone](01-landing-zone.png)
+[![RestSim high-level Azure landing zone](01-landing-zone.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=_U4szGZBWyCFBpTj2Gg4#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 ## Why I organised it this way
 
