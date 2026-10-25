@@ -51,14 +51,54 @@ Production uses multiple application instances with shared data services and a s
 
 [View the six-page architecture](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
-| Design | What it explains |
-| --- | --- |
-| [Landing zone](docs/architecture/01-landing-zone.md) | Resource organisation, availability, governance and cost. |
-| [Production network](docs/architecture/02-production-network.md) | Customer traffic, subnets and private service access. |
-| [Development network](docs/architecture/03-development-network.md) | Isolated developer testing and staging. |
-| [Application CI/CD](docs/architecture/04-application-cicd.md) | Versioned packages, controlled rollout and recovery. |
-| [Terraform CI/CD](docs/architecture/05-terraform-cicd.md) | Infrastructure review, state and deployment identity. |
-| [Production monitoring](docs/architecture/06-production-monitoring.md) | Telemetry, alerts and operational response. |
+| Design | What it explains | Detailed page |
+| --- | --- | --- |
+| [Landing zone](#landing-zone) | Resource organisation, availability, governance and cost. | [Details](docs/architecture/01-landing-zone.md) |
+| [Production network](#production-network) | Customer traffic, subnets and private service access. | [Details](docs/architecture/02-production-network.md) |
+| [Development network](#development-network) | Isolated developer testing and staging. | [Details](docs/architecture/03-development-network.md) |
+| [Application CI/CD](#application-cicd) | Versioned packages, controlled rollout and recovery. | [Details](docs/architecture/04-application-cicd.md) |
+| [Terraform CI/CD](#terraform-cicd) | Infrastructure review, state and deployment identity. | [Details](docs/architecture/05-terraform-cicd.md) |
+| [Production monitoring](#production-monitoring) | Telemetry, alerts and operational response. | [Details](docs/architecture/06-production-monitoring.md) |
+
+## Production network
+
+[![RestSim production network design](docs/architecture/02-production-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I kept Cloudflare as RestSim's public entry point and placed Standard Load Balancer in front of the VMSS to spread requests across healthy web instances. The application and worker use private connections to PostgreSQL, Files, Redis and Key Vault. Separate subnets and NSG rules control the permitted paths.
+
+[Design details](docs/architecture/02-production-network.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
+
+## Development network
+
+[![RestSim development network design](docs/architecture/03-development-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I designed development as the developers' isolated environment for testing and staging application changes before a production release. Separate networking, data and credentials keep it apart from production. Developers access the staging URL through Microsoft Entra ID and OAuth2 Proxy, while one VM keeps the development footprint smaller.
+
+[Design details](docs/architecture/03-development-network.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
+
+## Application CI/CD
+
+[![RestSim application ci/cd design](docs/architecture/04-application-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I designed the Azure release path around RestSim's existing CI and RQOS checks. One versioned package moves through private Blob Storage, Compute Gallery and staging before controlled VMSS rollout. Exact version pins, a separate worker handover and a recovery path keep deployment decisions traceable.
+
+[Design details](docs/architecture/04-application-cicd.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
+
+## Terraform CI/CD
+
+[![RestSim terraform ci/cd design](docs/architecture/05-terraform-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I separated infrastructure changes from application releases so each follows its own review process. The infrastructure workflow design uses Terraform plans, separate environment state, Azure Blob state storage and scoped GitHub OIDC identities. A saved-plan approval step ties the production change to the configuration that was reviewed.
+
+[Design details](docs/architecture/05-terraform-cicd.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
+
+## Production monitoring
+
+[![RestSim production monitoring design](docs/architecture/06-production-monitoring.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=ZR1PCFiNJjQxqDGBOhbM#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I designed central monitoring to trace RestSim application failures across web instances and managed dependencies. Application Insights provides request and dependency telemetry, while Linux logs and Azure diagnostics feed Log Analytics. I defined metric and Resource Health alerts for operational notifications, with retention and ingestion limits to manage log volume and cost.
+
+[Design details](docs/architecture/06-production-monitoring.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=ZR1PCFiNJjQxqDGBOhbM#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
 ## Current work
 
