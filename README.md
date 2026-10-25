@@ -20,9 +20,9 @@ RestSim runs on one VPS to keep costs low, but relying on one server creates a r
 
 ## My contribution
 
-I worked on the Azure architecture and infrastructure-as-code implementation, using RestSim's existing application and single-VPS setup to guide the decisions.
+I studied RestSim's current infrastructure and application requirements, then researched how Azure could improve availability, security and day-to-day operations. I used those findings to choose the cloud services and develop the infrastructure-as-code design, balancing RestSim's needs against cost and avoiding resources that did not serve a clear purpose.
 
-- **Architecture:** I defined the landing zone, resource groups and environment separation, then selected services for availability, scaling and shared data.
+- **Architecture and cost:** I defined the landing zone, resource groups and environment separation, then selected services for availability, scaling and shared data. I kept development smaller and reserved the additional availability resources for the production design.
 - **Networking and security:** I mapped customer traffic and private service connections, including subnets, NSG rules, private DNS, managed identities and Key Vault access.
 - **Infrastructure as code:** I translated the design into production Terraform covering networking, compute, data services, security, monitoring and backups.
 - **Delivery and operations:** I designed the Azure release path around RestSim's existing CI checks, with versioned packages, staging, controlled rollout and recovery.
