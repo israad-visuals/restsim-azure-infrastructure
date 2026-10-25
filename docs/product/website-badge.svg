@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="216" height="60" viewBox="0 0 144 40" role="img" aria-label="Visit RestSim website">
+  <rect x="0.5" y="0.5" width="143" height="39" rx="6" fill="#007E53" stroke="#007E53"/>
+  <g fill="none" stroke="#fff" stroke-width="1.4">
+    <circle cx="22" cy="20" r="10"/>
+    <ellipse cx="22" cy="20" rx="4.5" ry="10"/>
+    <path d="M12 20h20M14 14.5h16M14 25.5h16"/>
+  </g>
+  <g fill="#fff" font-family="Arial, Helvetica, sans-serif">
+    <text x="40" y="14" font-size="8">EXPLORE RESTSIM</text>
+    <text x="40" y="29" font-size="16">Visit website</text>
+  </g>
+</svg>

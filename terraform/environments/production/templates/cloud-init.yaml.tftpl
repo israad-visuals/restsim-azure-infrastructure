@@ -1,0 +1,10 @@
+#cloud-config
+# Write non-secret settings for the application package.
+# The application uses its managed identity to get secrets from Key Vault.
+# It must retry if the identity permissions are not ready yet.
+write_files:
+  - path: /etc/restsim/runtime.json
+    owner: root:root
+    permissions: '0644'
+    content: |
+      ${runtime_json}

@@ -1,0 +1,69 @@
+# Copy this example to terraform.tfvars and replace the placeholders. Git ignores that file.
+# No real tenant IDs, subscription IDs, SSH keys or credentials are included.
+subscription_id               = "REPLACE_WITH_PRODUCTION_SUBSCRIPTION_UUID"
+tenant_id                     = "REPLACE_WITH_PRODUCTION_TENANT_UUID"
+deployment_operator_object_id = "REPLACE_WITH_OPERATOR_OBJECT_UUID"
+location                      = "eastus"
+owner                         = "REPLACE_WITH_OWNER_TEAM"
+cost_center                   = "REPLACE_WITH_COST_CENTER"
+public_hostname               = "REPLACE_WITH_EXISTING_CLOUDFLARE_HOSTNAME"
+cloudflare_access_team_domain = "REPLACE_WITH_EXISTING_TEAM.cloudflareaccess.com"
+cloudflare_access_audience    = "REPLACE_WITH_EXISTING_ADMIN_ACCESS_AUDIENCE"
+alert_email                   = "REPLACE_WITH_OPERATIONS_EMAIL"
+
+admin_ssh_public_key = "REPLACE_WITH_SSH_PUBLIC_KEY_ONLY"
+# Use a private runner/admin network that can already reach this VNet.
+private_management_cidrs = ["REPLACE_WITH_CONNECTED_PRIVATE_IPV4_CIDR"]
+# Add IP ranges for any extra external HTTPS services the app needs.
+approved_outbound_https_cidrs = []
+
+# These are starting sizes. Check cost and region support before planning.
+# Also check the image version, availability zones, NAT and storage options.
+base_image = {
+  publisher = "Canonical"
+  offer     = "0001-com-ubuntu-server-jammy"
+  sku       = "22_04-lts-gen2"
+  version   = "REPLACE_WITH_EXACT_IMAGE_VERSION"
+}
+vmss_sku           = "Standard_D2s_v5"
+worker_sku         = "Standard_D2s_v5"
+vmss_max_instances = 4
+postgres_sku       = "GP_Standard_D2s_v3"
+postgres_version   = "16"
+redis_sku          = "Balanced_B0"
+files_quota_gb     = 100
+
+# For the first setup, use deploy_compute=false to create the resources before the VMs.
+# Publish and test the app package, then use true with its exact version IDs.
+# Do not switch to false after the VMs exist. prevent_destroy blocks their removal.
+deploy_compute                         = true
+approved_web_application_version_id    = "REPLACE_WITH_GALLERY_APPLICATION_VERSION_RESOURCE_ID"
+approved_worker_application_version_id = "REPLACE_WITH_WORKER_VERSION_RESOURCE_ID"
+
+# Keep real secrets in an ignored file or secure pipeline variables.
+# The database migration must create this limited login; it is not the admin login.
+postgres_application_username = "restsim_app"
+postgres_application_password = "REPLACE_WITH_STRONG_APPLICATION_LOGIN_PASSWORD"
+origin_tls_certificate_pem    = "REPLACE_WITH_ORIGIN_CERTIFICATE_PEM"
+origin_tls_private_key_pem    = "REPLACE_WITH_ORIGIN_PRIVATE_KEY_PEM"
+# Only turn this on after Cloudflare AOP client certificates are set up and tested.
+require_authenticated_origin_pulls = false
+# cloudflare_origin_pull_ca_pem = "REPLACE_WITH_VERIFIED_ORIGIN_PULL_CLIENT_CA_PEM"
+application_secrets = {}
+
+# Budget alerts send email. They do not stop spending or estimate the total cost.
+monthly_budget_amount          = 1 # REPLACE with your budget in billing currency.
+budget_start_date              = "REPLACE_WITH_FIRST_DAY_OF_CURRENT_BUDGET_MONTH_RFC3339"
+enable_subscription_governance = true
+# management_group_id = "/providers/Microsoft.Management/managementGroups/EXISTING_RESTSIM_GROUP"
+production_role_assignments = {}
+
+enable_github_oidc = true
+# Copy the exact OIDC subject for each protected GitHub environment.
+# Terraform uses this repo. Publishing and app releases use the existing Web repo.
+# Set up and check the GitHub environments first; they do not exist yet.
+# This infrastructure repo uses a name@ID prefix, so do not guess the subject.
+github_infrastructure_oidc_subject = "REPLACE_WITH_VERIFIED_INFRASTRUCTURE_ENVIRONMENT_SUBJECT"
+github_publisher_oidc_subject      = "REPLACE_WITH_VERIFIED_EXISTING_WEB_PUBLISHER_ENVIRONMENT_SUBJECT"
+github_release_oidc_subject        = "REPLACE_WITH_VERIFIED_EXISTING_WEB_RELEASE_ENVIRONMENT_SUBJECT"
+# terraform_state_container_id = "/subscriptions/.../resourceGroups/.../providers/Microsoft.Storage/storageAccounts/.../blobServices/default/containers/tfstate"

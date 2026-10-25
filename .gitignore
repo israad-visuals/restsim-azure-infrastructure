@@ -36,3 +36,7 @@ private/
 *.swp
 
 # Commit .terraform.lock.hcl when Terraform is introduced.
+
+# Local backend configuration (commit only backend.hcl.example)
+**/backend.hcl
+**/backend.*.hcl
