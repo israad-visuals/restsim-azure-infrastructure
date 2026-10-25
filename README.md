@@ -12,8 +12,6 @@ This project uses RestSim's requirements to design and build an Azure environmen
 
 **Contents:** [Business problem](#business-problem) · [My contribution](#my-contribution) · [Landing zone](#landing-zone) · [Architecture diagrams](#architecture-diagrams) · [Design guides](docs/architecture/README.md) · [Current work](#current-work) · [Staged approach](#staged-approach)
 
-[![RestSim website and mobile app store artwork](docs/product/restsim-product-preview.jpg)](https://restsim.com)
-
 ## Business problem
 
 RestSim runs on one VPS to keep costs low, but relying on one server creates a risk of downtime and limits how the application can handle growing traffic. With customers around the world, reliable access and fast response times across regions also matter.
@@ -27,6 +25,13 @@ I studied RestSim's current infrastructure and application requirements, then re
 - **Infrastructure as code:** I translated the design into production Terraform covering networking, compute, data services, security, monitoring and backups.
 - **Delivery and operations:** I designed the Azure release path around RestSim's existing CI checks, with versioned packages, staging, controlled rollout and recovery.
 - **Design documentation:** I created six draw.io diagrams and explained the requirements, service choices and trade-offs behind each design.
+
+<details>
+<summary>View the live RestSim product</summary>
+
+[![RestSim website and mobile app store artwork](docs/product/restsim-product-preview.jpg)](https://restsim.com)
+
+</details>
 
 ## Landing zone
 
