@@ -1,6 +1,3 @@
-# Reuse the existing RestSim pipeline. These are Azure identities, not new workflows.
-# Copy each exact OIDC subject from the correct GitHub job settings.
-
 resource "azurerm_user_assigned_identity" "github_infrastructure" {
   count               = var.enable_github_oidc ? 1 : 0
   name                = "id-restsim-prod-infrastructure"
@@ -52,8 +49,6 @@ resource "azurerm_federated_identity_credential" "github_release" {
   subject                   = var.github_release_oidc_subject
 }
 
-# Contributor can manage resources, but cannot grant roles or change policies.
-
 resource "azurerm_role_assignment" "github_infrastructure_network" {
   count                = var.enable_github_oidc ? 1 : 0
   scope                = azurerm_resource_group.rg-restsim-prod-network.id
@@ -89,7 +84,6 @@ resource "azurerm_role_assignment" "github_state" {
   principal_id         = azurerm_user_assigned_identity.github_infrastructure[0].principal_id
 }
 
-# Contributor alone cannot read or write Key Vault secrets.
 resource "azurerm_role_assignment" "github_infrastructure_secrets" {
   count                = var.enable_github_oidc ? 1 : 0
   scope                = azurerm_key_vault.production.id

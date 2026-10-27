@@ -24,7 +24,7 @@ I studied RestSim's current infrastructure and researched improvements based on 
 - **Private access and shared data:** I separated public traffic from databases, files and secrets, with private connections and workload identities. Shared data services let the design replace web VMs without tying persistent records, uploads or sessions to one instance.
 - **Repeatable infrastructure:** I translated the architecture into version-controlled Terraform, giving the project a reviewable configuration for networking, compute, data, security, monitoring and backups.
 - **Release consistency and recovery:** I designed a single-package release path around the existing CI checks, with staging, exact version pins and controlled rollout. The design addresses version differences between instances and includes a path to restore a previous compatible release.
-- **Engineering handover:** I created six draw.io diagrams and supporting explanations so another engineer can trace traffic, understand service choices and connect the architecture to the Terraform implementation.
+- **Engineering handover:** I created seven draw.io diagrams and supporting explanations so another engineer can trace traffic, understand service choices and connect the architecture to the Terraform implementation.
 
 <details>
 <summary>View the live RestSim product</summary>
@@ -49,7 +49,7 @@ Production uses multiple application instances with shared data services and a s
 
 ## Architecture diagrams
 
-[View the six-page architecture](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+[View the seven-page architecture](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 | Design | What it explains | Detailed page |
 | --- | --- | --- |
@@ -59,6 +59,7 @@ Production uses multiple application instances with shared data services and a s
 | [Application CI/CD](#application-cicd) | Versioned packages, controlled rollout and recovery. | [Details](docs/architecture/04-application-cicd.md) |
 | [Terraform CI/CD](#terraform-cicd) | Infrastructure review, state and deployment identity. | [Details](docs/architecture/05-terraform-cicd.md) |
 | [Production monitoring](#production-monitoring) | Telemetry, alerts and operational response. | [Details](docs/architecture/06-production-monitoring.md) |
+| [Development monitoring](#development-monitoring) | Development logs, resource metrics and email alerts. | [Details](docs/architecture/07-development-monitoring.md) |
 
 ## Production network
 
@@ -100,9 +101,17 @@ I designed central monitoring to trace RestSim application failures across web i
 
 [Design details](docs/architecture/06-production-monitoring.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=ZR1PCFiNJjQxqDGBOhbM#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
+## Development monitoring
+
+[![RestSim development monitoring design](docs/architecture/07-development-monitoring.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=gxs_Zrl31glBiPyCSrfB#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
+
+I gave development its own monitoring workspace and notifications so developers can investigate application changes separately from production. Linux performance data and service logs feed Log Analytics, while CPU and database-storage alerts send email through the development action group. A 30-day retention period, 0.5 GB/day ingestion cap and 25% Application Insights sampling setting keep the collection footprint smaller.
+
+[Design details](docs/architecture/07-development-monitoring.md) · [Open full-size image](docs/architecture/07-development-monitoring.png) · [Back to diagram table](#architecture-diagrams)
+
 ## Current work
 
-- **Architecture:** six diagrams and supporting design guides covering the landing zone, networks, delivery and monitoring.
+- **Architecture:** seven diagrams and supporting design guides covering the landing zone, networks, delivery and monitoring.
 - **Terraform:** [production configuration](terraform/environments/production/) written for networking, compute, data, security, monitoring and recovery.
 
 ## Staged approach

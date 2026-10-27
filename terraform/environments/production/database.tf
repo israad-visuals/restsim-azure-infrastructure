@@ -89,5 +89,3 @@ resource "azurerm_postgresql_flexible_server_configuration" "require_tls" {
   server_id = azurerm_postgresql_flexible_server.production.id
   value     = "on"
 }
-
-# Create the app database login and tables during the database migration.

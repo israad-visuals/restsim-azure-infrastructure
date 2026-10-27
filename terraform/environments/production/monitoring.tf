@@ -70,7 +70,6 @@ resource "azurerm_monitor_data_collection_rule_association" "worker" {
   data_collection_rule_id = azurerm_monitor_data_collection_rule.linux.id
 }
 
-# Each Azure service has different log categories. Read the supported list first.
 locals {
   diagnostic_resources = {
     postgres  = azurerm_postgresql_flexible_server.production.id
@@ -106,8 +105,6 @@ resource "azurerm_monitor_diagnostic_setting" "production" {
   }
 }
 
-# Send an email when these production measurements cross their limits.
-
 resource "azurerm_monitor_metric_alert" "postgres_cpu" {
   name                = "alert-restsim-prod-postgres-cpu"
   resource_group_name = azurerm_resource_group.rg-restsim-prod-monitoring.name
@@ -115,7 +112,7 @@ resource "azurerm_monitor_metric_alert" "postgres_cpu" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "PostgreSQL CPU use is high. Test the alert email and adjust the limit after checking real usage."
+  description         = "Production PostgreSQL average CPU exceeds 80% over 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -138,7 +135,7 @@ resource "azurerm_monitor_metric_alert" "postgres_storage" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "PostgreSQL storage use is high. Test the alert email and adjust the limit after checking real usage."
+  description         = "Production PostgreSQL average storage usage exceeds 80% over 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -161,7 +158,7 @@ resource "azurerm_monitor_metric_alert" "redis_load" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "Redis server load is high. Test the alert email and adjust the limit after checking real usage."
+  description         = "Production Redis maximum server load exceeds 80% within a 15-minute window."
   tags                = local.tags
 
   criteria {
@@ -184,7 +181,7 @@ resource "azurerm_monitor_metric_alert" "application_failures" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "The app is reporting failed requests. Test the alert email and adjust the limit after checking real usage."
+  description         = "More than five failed application requests are recorded within 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -208,7 +205,7 @@ resource "azurerm_monitor_metric_alert" "web_cpu" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "Web VM CPU use is high. Test the alert email and adjust the limit after checking real usage."
+  description         = "Production web scale-set average CPU exceeds 85% over 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -232,7 +229,7 @@ resource "azurerm_monitor_metric_alert" "worker_cpu" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "Worker VM CPU use is high. Test the alert email and adjust the limit after checking real usage."
+  description         = "Production background-worker average CPU exceeds 85% over 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -256,7 +253,7 @@ resource "azurerm_monitor_metric_alert" "web_readiness" {
   severity            = 2
   frequency           = "PT1M"
   window_size         = "PT15M"
-  description         = "Web instances are failing load balancer health checks. Test the alert email and adjust the limit after checking real usage."
+  description         = "Average load-balancer backend probe availability falls below 99% over 15 minutes."
   tags                = local.tags
 
   criteria {
@@ -277,7 +274,7 @@ resource "azurerm_monitor_activity_log_alert" "resource_health" {
   location            = "global"
   resource_group_name = azurerm_resource_group.rg-restsim-prod-monitoring.name
   scopes              = values(local.resource_groups)
-  description         = "An Azure resource in production is unhealthy or unavailable."
+  description         = "An Azure production resource reports degraded, unavailable or unknown health."
   criteria {
     category = "ResourceHealth"
     resource_health {

@@ -16,5 +16,6 @@ RestSim's growing customer base is the reason for the work: the current single-V
 | [Application CI/CD](04-application-cicd.md) | How one application version moves through testing, deployment and recovery. |
 | [Terraform CI/CD](05-terraform-cicd.md) | How infrastructure changes become repeatable and reviewable. |
 | [Production monitoring](06-production-monitoring.md) | How application, VM and service signals support troubleshooting. |
+| [Development monitoring](07-development-monitoring.md) | How developers investigate Linux and service logs and receive focused alerts. |
 
 The diagrams present the Azure design. The production Terraform contains its resource definitions; the workflow folder is a scaffold. The live customer service remains on the existing VPS, while the Azure environment uses separate credentials and synthetic data. Deployment evidence and measured outcomes are separate from these design explanations.

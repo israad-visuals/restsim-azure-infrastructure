@@ -1,5 +1,5 @@
 output "production_resource_group_ids" {
-  description = "IDs of the four production resource groups."
+  description = "Resource IDs for the four production resource groups."
   value       = local.resource_groups
 }
 output "vnet_id" {
@@ -13,7 +13,7 @@ output "subnet_ids" {
   }
 }
 output "origin_public_ip" {
-  description = "Public IP for the Azure web servers. Test the new servers before changing the existing Cloudflare DNS record."
+  description = "Public load-balancer IP used as the Cloudflare origin for RestSim web traffic."
   value       = azurerm_public_ip.ingress.ip_address
 }
 output "egress_public_ip" {

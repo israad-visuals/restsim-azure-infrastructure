@@ -1,5 +1,3 @@
-# These settings apply to production only.
-# The management groups and development subscription already sit outside this code.
 resource "azurerm_management_group_subscription_association" "production" {
   count               = var.management_group_id == null ? 0 : 1
   management_group_id = var.management_group_id

@@ -1,0 +1,20 @@
+#cloud-config
+write_files:
+  - path: /etc/restsim/runtime.json
+    owner: root:root
+    permissions: '0644'
+    content: |
+      ${runtime_json}
+  - path: /etc/restsim/developer-emails.txt
+    owner: root:root
+    permissions: '0600'
+    content: |
+      ${indent(6, developer_emails)}
+  - path: /etc/restsim/nonsecret.env
+    owner: root:root
+    permissions: '0644'
+    content: |
+      RESTSIM_DISABLE_SCHEDULERS=1
+      RESTSIM_PUBLIC_UPLOADS_DIR=/srv/restsim/uploads
+      HOST=127.0.0.1
+      PORT=5000

@@ -1,5 +1,5 @@
 variable "subscription_id" {
-  description = "ID of the production Azure subscription. Check it before using Azure."
+  description = "Azure subscription for RestSim production resources."
   type        = string
   validation {
     condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.subscription_id))
@@ -7,7 +7,7 @@ variable "subscription_id" {
   }
 }
 variable "tenant_id" {
-  description = "Microsoft Entra tenant ID for the production subscription."
+  description = "Microsoft Entra tenant for the production subscription."
   type        = string
   validation {
     condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.tenant_id))
@@ -15,34 +15,34 @@ variable "tenant_id" {
   }
 }
 variable "location" {
-  description = "Azure region for production. Check that the chosen sizes and availability zones are supported."
+  description = "Azure region hosting the production infrastructure."
   type        = string
   default     = "eastus"
 }
 variable "owner" {
-  description = "Team or person responsible for these resources. Used in tags."
+  description = "Resource owner recorded in production tags."
   type        = string
 }
 variable "cost_center" {
-  description = "Tag used to track production costs."
+  description = "Cost-centre tag for production spending."
   type        = string
 }
 variable "extra_tags" {
-  description = "Extra resource tags. These cannot replace the required production tags."
+  description = "Additional tags alongside the required production tags."
   type        = map(string)
   default     = {}
 }
 variable "public_hostname" {
-  description = "RestSim hostname already using Cloudflare. This code does not change its DNS records."
+  description = "RestSim hostname managed by the existing Cloudflare DNS configuration."
   type        = string
 }
 variable "admin_username" {
-  description = "VM administrator username. SSH is only allowed through a private connection."
+  description = "Administrator username for private VM access."
   type        = string
   default     = "restsimadmin"
 }
 variable "cloudflare_access_team_domain" {
-  description = "Existing Cloudflare Access team domain, without https://. Used to check admin sign-in tokens."
+  description = "Cloudflare Access team domain for admin token validation, without https://."
   type        = string
   validation {
     condition     = can(regex("^[a-z0-9-]+\\.cloudflareaccess\\.com$", var.cloudflare_access_team_domain))
@@ -50,7 +50,7 @@ variable "cloudflare_access_team_domain" {
   }
 }
 variable "cloudflare_access_audience" {
-  description = "Audience ID of the existing admin Access application. The app must check this in each token."
+  description = "Cloudflare Access audience identifying the admin application."
   type        = string
   validation {
     condition     = length(trimspace(var.cloudflare_access_audience)) > 0
@@ -58,7 +58,7 @@ variable "cloudflare_access_audience" {
   }
 }
 variable "admin_ssh_public_key" {
-  description = "SSH public key for private VM access. Do not use a private key here."
+  description = "SSH public key for private VM administration."
   type        = string
   validation {
     condition     = can(regex("^ssh-(rsa|ed25519) ", var.admin_ssh_public_key))
@@ -66,7 +66,7 @@ variable "admin_ssh_public_key" {
   }
 }
 variable "private_management_cidrs" {
-  description = "IP ranges of an already connected private runner or admin network. This does not create the connection."
+  description = "Connected private network ranges permitted to administer production resources."
   type        = list(string)
   default     = []
   validation {
@@ -77,7 +77,7 @@ variable "private_management_cidrs" {
   }
 }
 variable "approved_outbound_https_cidrs" {
-  description = "Extra IPv4 ranges the app can reach over HTTPS. NSGs check IP addresses, not website names."
+  description = "Additional IPv4 destinations permitted for application HTTPS traffic."
   type        = list(string)
   default     = []
   validation {
@@ -86,7 +86,7 @@ variable "approved_outbound_https_cidrs" {
   }
 }
 variable "cloudflare_ipv4_cidrs" {
-  description = "Cloudflare IPv4 ranges. Check https://www.cloudflare.com/ips-v4 before deployment."
+  description = "Cloudflare IPv4 ranges permitted to reach the production origin."
   type        = list(string)
   default = [
     "173.245.48.0/20",
@@ -113,17 +113,17 @@ variable "cloudflare_ipv4_cidrs" {
   }
 }
 variable "vmss_sku" {
-  description = "VM size for the web servers. Check its cost and availability in the chosen zones."
+  description = "VM size for production web and API instances."
   type        = string
   default     = "Standard_D2s_v5"
 }
 variable "worker_sku" {
-  description = "VM size for the single background worker."
+  description = "VM size for the production background worker."
   type        = string
   default     = "Standard_D2s_v5"
 }
 variable "vmss_max_instances" {
-  description = "Largest number of web VMs autoscale can create. At least two VMs stay running."
+  description = "Maximum web instance count; the scale set retains at least two instances."
   type        = number
   default     = 4
   validation {
@@ -132,7 +132,7 @@ variable "vmss_max_instances" {
   }
 }
 variable "base_image" {
-  description = "Ubuntu image used by the VMs. Choose an exact version."
+  description = "Ubuntu VM image reference with an exact version."
   type = object({
     publisher = string
     offer     = string
@@ -145,7 +145,7 @@ variable "base_image" {
   }
 }
 variable "approved_web_application_version_id" {
-  description = "Full ID of the Gallery app version tested in staging."
+  description = "Exact Gallery application-version ID for the production web release."
   type        = string
   validation {
     condition     = can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_web_application_version_id))
@@ -153,7 +153,7 @@ variable "approved_web_application_version_id" {
   }
 }
 variable "approved_worker_application_version_id" {
-  description = "Full ID of the first worker app version. Later updates use the separate worker release step."
+  description = "Initial worker application-version ID; later updates follow the separate worker release process."
   type        = string
   validation {
     condition     = can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_worker_application_version_id))
@@ -161,26 +161,31 @@ variable "approved_worker_application_version_id" {
   }
 }
 variable "deploy_compute" {
-  description = "Set false for the first setup, before the app package is published. Do not use false to remove existing VMs."
+  description = "Controls production VM deployment. Disabling this schedules existing VMs for removal."
   type        = bool
   default     = true
 }
 variable "readiness_port" {
-  description = "Private HTTP port used by load balancer health checks."
+  description = "Private HTTP port for load-balancer readiness probes."
   type        = number
   default     = 8081
   validation {
-    condition     = floor(var.readiness_port) == var.readiness_port && var.readiness_port >= 1024 && var.readiness_port <= 65535 && !contains([443, 5432, 10000], var.readiness_port)
+    condition = (
+      floor(var.readiness_port) == var.readiness_port &&
+      var.readiness_port >= 1024 &&
+      var.readiness_port <= 65535 &&
+      !contains([443, 5432, 10000], var.readiness_port)
+    )
     error_message = "Choose a separate readiness port from 1024 to 65535. Do not use a database or Redis port."
   }
 }
 variable "readiness_path" {
-  description = "HTTP path that returns 200 only when the app version and its required services are ready."
+  description = "Readiness endpoint returning HTTP 200 when the application and required dependencies are ready."
   type        = string
   default     = "/health/ready"
 }
 variable "postgres_sku" {
-  description = "PostgreSQL size that supports high availability across zones."
+  description = "PostgreSQL compute size supporting zone-redundant high availability."
   type        = string
   default     = "GP_Standard_D2s_v3"
   validation {
@@ -189,27 +194,27 @@ variable "postgres_sku" {
   }
 }
 variable "postgres_version" {
-  description = "PostgreSQL major version. Check that the app and database migration support it."
+  description = "PostgreSQL major version for the application database."
   type        = string
   default     = "16"
 }
 variable "postgres_storage_mb" {
-  description = "Starting PostgreSQL storage size in MiB."
+  description = "Initial PostgreSQL storage capacity in MiB."
   type        = number
   default     = 32768
 }
 variable "postgres_admin_username" {
-  description = "Database admin used during setup. The running app must use a separate login."
+  description = "Database administrator login, separate from the application login."
   type        = string
   default     = "restsimadmin"
 }
 variable "postgres_application_username" {
-  description = "Database login for the app. Create it during migration with only the permissions the app needs."
+  description = "PostgreSQL application login with workload-specific permissions."
   type        = string
   default     = "restsim_app"
 }
 variable "postgres_application_password" {
-  description = "Password for the app database login. Use the same password during migration. Stored in state and Key Vault."
+  description = "Application database password stored in Terraform state and Key Vault."
   type        = string
   sensitive   = true
   validation {
@@ -218,17 +223,17 @@ variable "postgres_application_password" {
   }
 }
 variable "redis_sku" {
-  description = "Azure Managed Redis size. High availability stays on; check region and zone support."
+  description = "Azure Managed Redis size with high availability enabled."
   type        = string
   default     = "Balanced_B0"
 }
 variable "files_quota_gb" {
-  description = "Azure Files share size limit in GiB. Check storage needs and cost."
+  description = "Azure Files share capacity limit in GiB."
   type        = number
   default     = 100
 }
 variable "deployment_operator_object_id" {
-  description = "Entra object ID of the person or identity doing the first setup. Keep this separate from later CI jobs."
+  description = "Entra object ID of the infrastructure provisioning identity, separate from CI identities."
   type        = string
   validation {
     condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.deployment_operator_object_id))
@@ -237,17 +242,17 @@ variable "deployment_operator_object_id" {
 }
 
 variable "origin_tls_certificate_pem" {
-  description = "TLS certificate for the Azure web servers, in PEM format. Use Cloudflare Origin CA or another certificate trusted by Full (strict)."
+  description = "PEM server certificate for the Azure origin, trusted by Cloudflare Full (strict)."
   type        = string
   sensitive   = true
 }
 variable "origin_tls_private_key_pem" {
-  description = "PEM private key for that certificate. Keep it out of Git."
+  description = "Sensitive PEM private key for the origin TLS certificate."
   type        = string
   sensitive   = true
 }
 variable "cloudflare_origin_pull_ca_pem" {
-  description = "CA certificate used to check Cloudflare AOP client certificates. Leave null when AOP is off. This is separate from the server certificate."
+  description = "CA certificate for Cloudflare client-certificate validation; null when AOP is disabled."
   type        = string
   default     = null
   validation {
@@ -256,12 +261,12 @@ variable "cloudflare_origin_pull_ca_pem" {
   }
 }
 variable "require_authenticated_origin_pulls" {
-  description = "Require Cloudflare client certificates only after AOP is set up and checked. This code does not change Cloudflare."
+  description = "Enables origin client-certificate enforcement for the configured Cloudflare AOP connection."
   type        = bool
   default     = false
 }
 variable "application_secrets" {
-  description = "Extra app secrets, using Key Vault secret names as keys. Do not put real secrets in the example file."
+  description = "Application secrets indexed by Key Vault secret name."
   type        = map(string)
   sensitive   = true
   default     = {}
@@ -277,11 +282,11 @@ variable "application_secrets" {
   }
 }
 variable "alert_email" {
-  description = "Email address for monitoring and budget alerts."
+  description = "Operations email receiving monitoring alerts and budget notifications."
   type        = string
 }
 variable "monthly_budget_amount" {
-  description = "Monthly budget in the subscription billing currency. Alerts do not stop spending."
+  description = "Monthly budget in the subscription billing currency; notifications do not cap spending."
   type        = number
   validation {
     condition     = var.monthly_budget_amount > 0
@@ -289,7 +294,7 @@ variable "monthly_budget_amount" {
   }
 }
 variable "budget_start_date" {
-  description = "First day of the budget month, for example 2026-11-01T00:00:00Z."
+  description = "Budget period start, using the first day of the month in UTC."
   type        = string
   validation {
     condition     = can(regex("^[0-9]{4}-[0-9]{2}-01T00:00:00Z$", var.budget_start_date))
@@ -297,17 +302,17 @@ variable "budget_start_date" {
   }
 }
 variable "enable_subscription_governance" {
-  description = "Create region and tag policies and a monthly budget. This needs subscription permissions."
+  description = "Enables region policies, required tags and a subscription budget."
   type        = bool
   default     = true
 }
 variable "management_group_id" {
-  description = "ID of an existing RestSim management group. Leave null to skip linking the subscription."
+  description = "Existing RestSim management-group ID for the production subscription association."
   type        = string
   default     = null
 }
 variable "production_role_assignments" {
-  description = "Production subscription access roles, listed by purpose."
+  description = "Production subscription role assignments grouped by operational purpose."
   type = map(object({
     principal_id         = string
     role_definition_name = string
@@ -315,12 +320,12 @@ variable "production_role_assignments" {
   default = {}
 }
 variable "enable_github_oidc" {
-  description = "Create separate Azure identities for Terraform, package publishing and app releases. Reuse the existing RestSim pipeline."
+  description = "Enables separate OIDC identities for infrastructure, artifact publishing and application releases."
   type        = bool
   default     = true
 }
 variable "github_infrastructure_oidc_subject" {
-  description = "Exact OIDC subject for the Terraform job in a protected GitHub environment. Check the repository prefix; it may include IDs."
+  description = "Exact OIDC subject for the protected GitHub infrastructure job."
   type        = string
   default     = null
   validation {
@@ -329,7 +334,7 @@ variable "github_infrastructure_oidc_subject" {
   }
 }
 variable "github_publisher_oidc_subject" {
-  description = "Exact OIDC subject for the publishing job in the existing Web pipeline. Use a protected GitHub environment."
+  description = "Exact OIDC subject for the protected application-package publishing job."
   type        = string
   default     = null
   validation {
@@ -338,7 +343,7 @@ variable "github_publisher_oidc_subject" {
   }
 }
 variable "github_release_oidc_subject" {
-  description = "Exact OIDC subject for the release job in the existing Web pipeline. Use a separate protected GitHub environment."
+  description = "Exact OIDC subject for the protected application-release job."
   type        = string
   default     = null
   validation {
@@ -351,7 +356,7 @@ variable "github_release_oidc_subject" {
   }
 }
 variable "terraform_state_container_id" {
-  description = "Full Azure resource ID of the existing state container. Used to give the Terraform identity Blob Data Contributor access. Leave null to set this up separately."
+  description = "Existing state container receiving scoped Blob Data Contributor access; null omits that role assignment."
   type        = string
   default     = null
 }

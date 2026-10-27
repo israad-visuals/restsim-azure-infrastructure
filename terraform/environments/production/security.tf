@@ -1,4 +1,3 @@
-# Keep this existing Terraform name so its resource address stays the same.
 resource "azurerm_network_security_group" "nsg_rg-restsim-prod-network" {
   name                = "nsg-prod-app"
   location            = var.location
@@ -29,11 +28,6 @@ resource "azurerm_subnet_network_security_group_association" "private_endpoints"
   subnet_id                 = azurerm_subnet.private_endpoints.id
   network_security_group_id = azurerm_network_security_group.private_endpoints.id
 }
-
-# These rules allow only the connections the application needs.
-# The deny rules at the end block other traffic.
-
-# Application subnet
 
 resource "azurerm_network_security_rule" "app_cloudflare" {
   name                        = "app-cloudflare"
@@ -205,8 +199,6 @@ resource "azurerm_network_security_rule" "app_deny_out" {
   network_security_group_name = azurerm_network_security_group.nsg_rg-restsim-prod-network.name
 }
 
-# Database subnet
-
 resource "azurerm_network_security_rule" "data_app" {
   name                        = "data-app"
   priority                    = 100
@@ -347,8 +339,6 @@ resource "azurerm_network_security_rule" "data_deny_out" {
   resource_group_name         = azurerm_resource_group.rg-restsim-prod-network.name
   network_security_group_name = azurerm_network_security_group.data.name
 }
-
-# Private endpoint subnet
 
 resource "azurerm_network_security_rule" "pe_app" {
   name                        = "pe-app"

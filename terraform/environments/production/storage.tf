@@ -9,8 +9,7 @@ resource "azurerm_storage_account" "files" {
   https_traffic_only_enabled      = true
   public_network_access_enabled   = false
   allow_nested_items_to_be_public = false
-  # Linux reads the storage key from Key Vault to mount this share.
-  shared_access_key_enabled = true
+  shared_access_key_enabled       = true
   network_rules {
     default_action = "Deny"
     bypass         = ["AzureServices"]
@@ -57,8 +56,7 @@ resource "azurerm_storage_account" "artifacts" {
   default_to_oauth_authentication = true
   network_rules {
     default_action = "Deny"
-    # Allow Compute Gallery to read packages using its Azure identity.
-    bypass = ["AzureServices"]
+    bypass         = ["AzureServices"]
   }
   blob_properties {
     versioning_enabled = true
@@ -81,8 +79,6 @@ resource "azurerm_storage_container" "releases" {
   container_access_type = "private"
 }
 
-# Use Azure Managed Redis for shared app sessions.
-# EnterpriseCluster gives the app one encrypted endpoint on port 10000.
 resource "azurerm_managed_redis" "sessions" {
   name                      = "redis-restsim-prod-${local.suffix}"
   location                  = var.location

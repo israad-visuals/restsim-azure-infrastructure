@@ -15,7 +15,6 @@ locals {
     data       = azurerm_resource_group.rg-restsim-prod-data.id
     monitoring = azurerm_resource_group.rg-restsim-prod-monitoring.id
   }
-  # The application package reads these settings when it starts. No secret values go here.
   runtime_configuration = {
     environment                   = local.environment
     public_hostname               = var.public_hostname
@@ -28,7 +27,7 @@ locals {
       CLOUDFLARE_ACCESS_TEAM_DOMAIN    = var.cloudflare_access_team_domain
       CLOUDFLARE_ACCESS_AUD            = var.cloudflare_access_audience
     }
-    # Keep the existing local application ports and their separate release versions.
+
     apache_loopback_upstreams          = { web_api = 5083, stripe_webhook = 5016, websocket = 5067 }
     worker_loopback_port               = 5080
     vault_uri                          = azurerm_key_vault.production.vault_uri

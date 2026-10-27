@@ -114,9 +114,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web" {
   ]
   lifecycle {
     prevent_destroy = true
-    # Autoscale changes the VM count. The release pipeline changes app versions.
-    # AzureRM 4.81 can replace the VMSS when the Gallery version changes.
-    # Let the app pipeline manage later releases instead.
+
     ignore_changes = [instances, gallery_application]
   }
 }
@@ -268,7 +266,7 @@ resource "azurerm_linux_virtual_machine" "worker" {
   ]
   lifecycle {
     prevent_destroy = true
-    # The worker release step drains and stops the old worker, checks ownership, then starts the new one.
+
     ignore_changes = [gallery_application]
   }
 }
@@ -286,16 +284,12 @@ resource "azurerm_virtual_machine_extension" "worker_monitor" {
 }
 
 locals {
-  # The web VMs and worker each get their own managed identity.
   runtime_principals = var.deploy_compute ? {
     web    = azurerm_linux_virtual_machine_scale_set.web[0].identity[0].principal_id
     worker = azurerm_linux_virtual_machine.worker[0].identity[0].principal_id
   } : {}
 
 }
-
-# Each VM identity can read only these application secrets.
-# The VMs cannot read the database admin password.
 
 resource "azurerm_role_assignment" "web_postgres_application_username" {
   count                = var.deploy_compute ? 1 : 0
@@ -353,7 +347,6 @@ resource "azurerm_role_assignment" "web_application_insights_connection_string" 
   principal_id         = azurerm_linux_virtual_machine_scale_set.web[0].identity[0].principal_id
 }
 
-# This identity can also read the extra app secrets listed in the inputs.
 resource "azurerm_role_assignment" "web_application_secrets" {
   for_each             = var.deploy_compute ? toset(nonsensitive(keys(var.application_secrets))) : toset([])
   scope                = azurerm_key_vault_secret.application[each.key].resource_versionless_id
@@ -417,7 +410,6 @@ resource "azurerm_role_assignment" "worker_application_insights_connection_strin
   principal_id         = azurerm_linux_virtual_machine.worker[0].identity[0].principal_id
 }
 
-# This identity can also read the extra app secrets listed in the inputs.
 resource "azurerm_role_assignment" "worker_application_secrets" {
   for_each             = var.deploy_compute ? toset(nonsensitive(keys(var.application_secrets))) : toset([])
   scope                = azurerm_key_vault_secret.application[each.key].resource_versionless_id

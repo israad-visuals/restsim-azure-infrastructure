@@ -1,5 +1,3 @@
-# Store secrets here instead of putting them in VM settings or Git.
-
 resource "azurerm_key_vault" "production" {
   name                          = "kv-restsim-prod-${local.suffix}"
   location                      = var.location
@@ -207,7 +205,6 @@ resource "azurerm_key_vault_secret" "application_insights_connection_string" {
   ]
 }
 
-# Use this only for any extra secrets the real application needs.
 resource "azurerm_key_vault_secret" "application" {
   for_each     = toset(nonsensitive(keys(var.application_secrets)))
   name         = each.key

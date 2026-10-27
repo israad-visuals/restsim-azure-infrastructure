@@ -1,8 +1,5 @@
-# Copy to backend.hcl (ignored), using your existing production state backend.
 resource_group_name  = "REPLACE_WITH_STATE_RESOURCE_GROUP"
 storage_account_name = "REPLACE_WITH_STATE_STORAGE_ACCOUNT"
 container_name       = "tfstate"
 key                  = "restsim/production/terraform.tfstate"
 use_azuread_auth     = true
-# For a GitHub environment runner, use OIDC authentication outside this file.
-# Do not put client secrets, access keys or SAS tokens in backend configuration.

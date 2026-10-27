@@ -1,14 +1,10 @@
-# PostgreSQL keeps 35 days of backups and a copy in another region. See database.tf.
-# File backups stay separate from VM replacements and Redis sessions.
 resource "azurerm_recovery_services_vault" "production" {
   name                = "rsv-restsim-prod"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg-restsim-prod-data.name
   sku                 = "Standard"
   storage_mode_type   = "ZoneRedundant"
-  # AzureRM 4.81 does not expose a soft_delete_enabled argument here.
-  # Check that Azure has soft delete enabled before adding data to the backup.
-  tags = local.tags
+  tags                = local.tags
   lifecycle {
     prevent_destroy = true
   }

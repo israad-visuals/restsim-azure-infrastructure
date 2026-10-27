@@ -5,7 +5,6 @@ resource "azurerm_user_assigned_identity" "gallery_publisher" {
   tags                = local.tags
 }
 
-# AzAPI lets us attach the Gallery identity, which AzureRM 4.81 cannot do.
 resource "azapi_resource" "gallery" {
   type      = "Microsoft.Compute/galleries@2024-03-03"
   name      = "gal_restsim_prod"
@@ -17,7 +16,7 @@ resource "azapi_resource" "gallery" {
   }
   body = {
     properties = {
-      description = "Private RestSim app packages with version numbers"
+      description = "Versioned RestSim application packages for production deployment"
     }
   }
   tags = local.tags
@@ -34,10 +33,6 @@ resource "azurerm_gallery_application" "restsim" {
   gallery_id        = azapi_resource.gallery.id
   location          = var.location
   supported_os_type = "Linux"
-  description       = "One RestSim app package. Web and worker roles use separate settings."
+  description       = "Versioned RestSim application for web and background-worker deployments."
   tags              = local.tags
 }
-
-# The app pipeline builds and checks the package, then publishes a Gallery version.
-# Test it in staging before setting that exact version on the VMSS.
-# This code creates the Gallery app, but does not upload an app package.

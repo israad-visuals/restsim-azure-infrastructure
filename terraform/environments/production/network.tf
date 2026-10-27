@@ -6,8 +6,6 @@ resource "azurerm_virtual_network" "vnet-restsim-prod" {
   tags                = local.tags
 }
 
-# Define each subnet separately. Do not also add subnet blocks inside the VNet.
-# Keep 10.20.0.0/24 free for later use.
 resource "azurerm_subnet" "app" {
   name                            = "snet-prod-app"
   resource_group_name             = azurerm_resource_group.rg-restsim-prod-network.name
@@ -141,7 +139,6 @@ resource "azurerm_lb_backend_address_pool" "web" {
   loadbalancer_id = azurerm_lb.production.id
 }
 
-# Use a separate health-check port so HTTPS can still require client certificates.
 resource "azurerm_lb_probe" "readiness" {
   name                = "restsim-readiness"
   loadbalancer_id     = azurerm_lb.production.id
@@ -167,8 +164,6 @@ resource "azurerm_lb_rule" "https" {
   load_distribution              = "Default"
 }
 
-# Apache redirects HTTP to HTTPS. The load balancer only forwards TCP traffic.
-# The existing Cloudflare setting does not force HTTPS.
 resource "azurerm_lb_rule" "http_redirect" {
   name                           = "http-to-apache-redirect"
   loadbalancer_id                = azurerm_lb.production.id
@@ -183,8 +178,6 @@ resource "azurerm_lb_rule" "http_redirect" {
   idle_timeout_in_minutes        = 4
 }
 
-# NAT gives the VMs outbound access through one public IP.
-# The VMs do not have their own public IPs.
 resource "azurerm_public_ip" "egress" {
   name                = "pip-restsim-prod-egress"
   location            = var.location
