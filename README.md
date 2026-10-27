@@ -1,7 +1,5 @@
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
 
-**Terraform · Azure Networking · High Availability · Security · CI/CD · Monitoring**
-
 [RestSim](https://restsim.com) is a travel eSIM platform that helps travelers stay connected abroad with mobile data, calls and SMS, depending on the plan. Customers can browse destinations, buy plans and manage their eSIMs through the website and mobile apps. It started with a small user base and now serves a growing number of users.
 
 | Website | iOS app | Android app |
