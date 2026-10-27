@@ -40,4 +40,4 @@ The PostgreSQL configuration includes zone-redundant HA, 35-day backup retention
 
 Tags identify the project, environment, owner and cost centre. Optional region/tag policies support consistent configuration, while budget notifications help track spending. Development uses a smaller footprint so routine testing does not duplicate the full production cost.
 
-The application design uses one Azure region with multiple availability zones. It improves the regional architecture without claiming a second application region or a measured global latency improvement.
+The application design uses one Azure region with multiple availability zones.
