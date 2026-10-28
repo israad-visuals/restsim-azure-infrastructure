@@ -15,9 +15,9 @@ As RestSim's infrastructure grows beyond one server, changes need to be understa
 | Reduce the risk of testing directly against production. | Separate development and production configuration and state. | Allows environment-specific review without mixing their resource records. |
 | Understand what a production change will replace or delete. | A fresh production plan with a separate review gate. | Makes potentially disruptive actions visible before apply. |
 | Keep the reviewed change tied to the deployment. | Apply the exact saved plan. | Prevents an unrelated new plan from silently replacing the reviewed one. |
-| Keep Terraform's resource record off an individual laptop. | Azure Blob remote state with separate environment keys and state locking. | Centralises state and prevents competing state writes during an operation. |
+| Keep state management simple while working locally. | A local `terraform.tfstate` file in each environment folder. | Records production and development separately without a dedicated Azure state-storage account. |
 | Avoid storing a long-lived Azure client secret in GitHub. | GitHub OIDC and scoped deployment identities. | Ties Azure access to the trusted repository and job context. |
-| Preserve recovery information during workload cleanup. | State storage bootstrapped separately from workload resources. | Keeps the backend lifecycle separate from the environment it records. |
+| Retain the resource record through deployment and cleanup. | Protected local state backups, kept outside Git. | Preserves the state needed to manage and remove resources. |
 
 ## How an infrastructure change moves
 
@@ -27,10 +27,10 @@ Development and production use different inputs and state, so their plans are se
 
 ## Access and change ownership
 
-The infrastructure identity has scoped resource-group, backend and vault permissions. Subscription-level policies, role assignments and bootstrap operations have a separate administrative permission requirement. The runner also needs a private network path to protected services.
+The infrastructure identity has scoped resource-group and vault permissions. Subscription-level policies and role assignments have a separate administrative permission requirement. The runner also needs a private network path to protected services.
 
 Terraform owns resource configuration. Autoscale owns the current web instance count, and application delivery owns later Gallery release versions. Keeping those responsibilities explicit prevents an infrastructure change from resetting an application release or undoing a scaling decision.
 
 Infrastructure recovery uses the failed change, resource state and a new reviewed plan. Application rollback and database/file recovery remain separate processes.
 
-The workflow directory is currently a scaffold. This diagram presents the infrastructure delivery design alongside the Terraform resource implementation.
+I run Terraform from the local deployment machine. Production uses `terraform/environments/production/terraform.tfstate`; development uses `terraform/environments/development/terraform.tfstate`. These files and their backups stay out of Git. Local state remains on this machine; GitHub-hosted infrastructure runs would need a persistent state arrangement before use.

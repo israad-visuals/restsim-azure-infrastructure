@@ -89,7 +89,7 @@ I designed the Azure release path around RestSim's existing CI and RQOS checks. 
 
 [![RestSim terraform ci/cd design](docs/architecture/05-terraform-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
-I separated infrastructure changes from application releases so each follows its own review process. The infrastructure workflow design uses Terraform plans, separate environment state, Azure Blob state storage and scoped GitHub OIDC identities. A saved-plan approval step ties the production change to the configuration that was reviewed.
+I separated infrastructure changes from application releases so each follows its own review process. The infrastructure workflow design uses Terraform plans and separate environment state. I keep each state file locally beside its environment configuration; GitHub OIDC provides scoped identities for the delivery design. A saved-plan approval step ties the production change to the configuration that was reviewed.
 
 [Design details](docs/architecture/05-terraform-cicd.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
