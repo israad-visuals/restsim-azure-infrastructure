@@ -77,13 +77,6 @@ resource "azurerm_role_assignment" "github_infrastructure_monitoring" {
   principal_id         = azurerm_user_assigned_identity.github_infrastructure[0].principal_id
 }
 
-resource "azurerm_role_assignment" "github_state" {
-  count                = var.enable_github_oidc && var.terraform_state_container_id != null ? 1 : 0
-  scope                = var.terraform_state_container_id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.github_infrastructure[0].principal_id
-}
-
 resource "azurerm_role_assignment" "github_infrastructure_secrets" {
   count                = var.enable_github_oidc ? 1 : 0
   scope                = azurerm_key_vault.production.id

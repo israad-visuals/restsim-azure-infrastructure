@@ -355,8 +355,3 @@ variable "github_release_oidc_subject" {
     error_message = "Use different protected OIDC subjects for publishing and production releases."
   }
 }
-variable "terraform_state_container_id" {
-  description = "Existing state container receiving scoped Blob Data Contributor access; null omits that role assignment."
-  type        = string
-  default     = null
-}
