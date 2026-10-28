@@ -144,19 +144,26 @@ variable "base_image" {
     error_message = "Enter an exact image version, such as 1.2.3."
   }
 }
+variable "install_application" {
+  description = "Installs versioned RestSim packages on the production VMs."
+  type        = bool
+  default     = true
+}
 variable "approved_web_application_version_id" {
   description = "Exact Gallery application-version ID for the production web release."
   type        = string
+  default     = null
   validation {
-    condition     = can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_web_application_version_id))
+    condition     = var.approved_web_application_version_id == null ? (!var.install_application || !var.deploy_compute) : can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_web_application_version_id))
     error_message = "Enter the full Gallery app version ID ending in a number such as 1.2.3. Do not use latest."
   }
 }
 variable "approved_worker_application_version_id" {
   description = "Initial worker application-version ID; later updates follow the separate worker release process."
   type        = string
+  default     = null
   validation {
-    condition     = can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_worker_application_version_id))
+    condition     = var.approved_worker_application_version_id == null ? (!var.install_application || !var.deploy_compute) : can(regex("/galleries/[^/]+/applications/[^/]+/versions/[0-9]+\\.[0-9]+\\.[0-9]+$", var.approved_worker_application_version_id))
     error_message = "Enter the full worker app version ID ending in a number such as 1.2.3."
   }
 }

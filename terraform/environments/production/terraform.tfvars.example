@@ -27,6 +27,7 @@ postgres_version   = "16"
 redis_sku          = "Balanced_B0"
 files_quota_gb     = 100
 
+install_application                    = true
 deploy_compute                         = true
 approved_web_application_version_id    = "REPLACE_WITH_GALLERY_APPLICATION_VERSION_RESOURCE_ID"
 approved_worker_application_version_id = "REPLACE_WITH_WORKER_VERSION_RESOURCE_ID"

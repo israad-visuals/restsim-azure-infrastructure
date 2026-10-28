@@ -12,7 +12,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web" {
   admin_username                  = var.admin_username
   disable_password_authentication = true
   computer_name_prefix            = "rsprodweb"
-  upgrade_mode                    = "Rolling"
+  upgrade_mode                    = var.install_application ? "Rolling" : "Manual"
   health_probe_id                 = azurerm_lb_probe.readiness.id
   secure_boot_enabled             = true
   vtpm_enabled                    = true
@@ -50,22 +50,28 @@ resource "azurerm_linux_virtual_machine_scale_set" "web" {
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.web.id]
     }
   }
-  gallery_application {
-    version_id = var.approved_web_application_version_id
-    order      = 1
-    tag        = "restsim-web-schedulers-disabled"
+  dynamic "gallery_application" {
+    for_each = var.install_application ? [var.approved_web_application_version_id] : []
+    content {
+      version_id = gallery_application.value
+      order      = 1
+      tag        = "restsim-web-schedulers-disabled"
+    }
   }
   automatic_instance_repair {
-    enabled      = true
+    enabled      = var.install_application
     grace_period = "PT30M"
     action       = "Replace"
   }
-  rolling_upgrade_policy {
-    max_batch_instance_percent              = 50
-    max_unhealthy_instance_percent          = 0
-    max_unhealthy_upgraded_instance_percent = 0
-    pause_time_between_batches              = "PT5M"
-    cross_zone_upgrades_enabled             = false
+  dynamic "rolling_upgrade_policy" {
+    for_each = var.install_application ? [1] : []
+    content {
+      max_batch_instance_percent              = 50
+      max_unhealthy_instance_percent          = 0
+      max_unhealthy_upgraded_instance_percent = 0
+      pause_time_between_batches              = "PT5M"
+      cross_zone_upgrades_enabled             = false
+    }
   }
   extension {
     name                       = "AzureMonitorLinuxAgent"
@@ -222,12 +228,15 @@ resource "azurerm_linux_virtual_machine" "worker" {
     disk_size_gb         = 64
   }
   boot_diagnostics {}
-  gallery_application {
-    version_id                                  = var.approved_worker_application_version_id
-    automatic_upgrade_enabled                   = false
-    treat_failure_as_deployment_failure_enabled = true
-    order                                       = 1
-    tag                                         = "restsim-worker-separate-owner-gate"
+  dynamic "gallery_application" {
+    for_each = var.install_application ? [var.approved_worker_application_version_id] : []
+    content {
+      version_id                                  = gallery_application.value
+      automatic_upgrade_enabled                   = false
+      treat_failure_as_deployment_failure_enabled = true
+      order                                       = 1
+      tag                                         = "restsim-worker-separate-owner-gate"
+    }
   }
   tags = local.tags
   depends_on = [
