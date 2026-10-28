@@ -44,16 +44,18 @@ variable "admin_username" {
 variable "cloudflare_access_team_domain" {
   description = "Cloudflare Access team domain for admin token validation, without https://."
   type        = string
+  default     = null
   validation {
-    condition     = can(regex("^[a-z0-9-]+\\.cloudflareaccess\\.com$", var.cloudflare_access_team_domain))
+    condition     = var.cloudflare_access_team_domain == null ? !var.install_application : can(regex("^[a-z0-9-]+\\.cloudflareaccess\\.com$", var.cloudflare_access_team_domain))
     error_message = "Enter the existing team domain ending in .cloudflareaccess.com."
   }
 }
 variable "cloudflare_access_audience" {
   description = "Cloudflare Access audience identifying the admin application."
   type        = string
+  default     = null
   validation {
-    condition     = length(trimspace(var.cloudflare_access_audience)) > 0
+    condition     = var.cloudflare_access_audience == null ? !var.install_application : length(trimspace(var.cloudflare_access_audience)) > 0
     error_message = "Enter the audience ID for the existing admin Access app."
   }
 }
@@ -251,13 +253,25 @@ variable "deployment_operator_object_id" {
 variable "origin_tls_certificate_pem" {
   description = "PEM server certificate for the Azure origin, trusted by Cloudflare Full (strict)."
   type        = string
+  default     = null
   sensitive   = true
+  validation {
+    condition     = !var.install_application || try(length(trimspace(var.origin_tls_certificate_pem)) > 0, false)
+    error_message = "Set origin_tls_certificate_pem when installing RestSim."
+  }
 }
+
 variable "origin_tls_private_key_pem" {
   description = "Sensitive PEM private key for the origin TLS certificate."
   type        = string
+  default     = null
   sensitive   = true
+  validation {
+    condition     = !var.install_application || try(length(trimspace(var.origin_tls_private_key_pem)) > 0, false)
+    error_message = "Set origin_tls_private_key_pem when installing RestSim."
+  }
 }
+
 variable "cloudflare_origin_pull_ca_pem" {
   description = "CA certificate for Cloudflare client-certificate validation; null when AOP is disabled."
   type        = string

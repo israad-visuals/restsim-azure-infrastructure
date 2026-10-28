@@ -329,15 +329,15 @@ resource "azurerm_role_assignment" "web_redis_session_key" {
 }
 
 resource "azurerm_role_assignment" "web_origin_tls_certificate" {
-  count                = var.deploy_compute ? 1 : 0
-  scope                = azurerm_key_vault_secret.origin_tls_certificate.resource_versionless_id
+  count                = var.deploy_compute && var.install_application ? 1 : 0
+  scope                = azurerm_key_vault_secret.origin_tls_certificate[0].resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_linux_virtual_machine_scale_set.web[0].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "web_origin_tls_private_key" {
-  count                = var.deploy_compute ? 1 : 0
-  scope                = azurerm_key_vault_secret.origin_tls_private_key.resource_versionless_id
+  count                = var.deploy_compute && var.install_application ? 1 : 0
+  scope                = azurerm_key_vault_secret.origin_tls_private_key[0].resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_linux_virtual_machine_scale_set.web[0].identity[0].principal_id
 }
@@ -392,15 +392,15 @@ resource "azurerm_role_assignment" "worker_redis_session_key" {
 }
 
 resource "azurerm_role_assignment" "worker_origin_tls_certificate" {
-  count                = var.deploy_compute ? 1 : 0
-  scope                = azurerm_key_vault_secret.origin_tls_certificate.resource_versionless_id
+  count                = var.deploy_compute && var.install_application ? 1 : 0
+  scope                = azurerm_key_vault_secret.origin_tls_certificate[0].resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_linux_virtual_machine.worker[0].identity[0].principal_id
 }
 
 resource "azurerm_role_assignment" "worker_origin_tls_private_key" {
-  count                = var.deploy_compute ? 1 : 0
-  scope                = azurerm_key_vault_secret.origin_tls_private_key.resource_versionless_id
+  count                = var.deploy_compute && var.install_application ? 1 : 0
+  scope                = azurerm_key_vault_secret.origin_tls_private_key[0].resource_versionless_id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_linux_virtual_machine.worker[0].identity[0].principal_id
 }

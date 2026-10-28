@@ -125,6 +125,7 @@ resource "azurerm_key_vault_secret" "redis_session_key" {
 }
 
 resource "azurerm_key_vault_secret" "origin_tls_certificate" {
+  count        = var.install_application ? 1 : 0
   name         = "origin-tls-certificate"
   value        = var.origin_tls_certificate_pem
   key_vault_id = azurerm_key_vault.production.id
@@ -145,6 +146,7 @@ resource "azurerm_key_vault_secret" "origin_tls_certificate" {
 }
 
 resource "azurerm_key_vault_secret" "origin_tls_private_key" {
+  count        = var.install_application ? 1 : 0
   name         = "origin-tls-private-key"
   value        = var.origin_tls_private_key_pem
   key_vault_id = azurerm_key_vault.production.id
