@@ -1,4 +1,4 @@
-![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-status.svg)
+![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-at-a-glance.svg)
 
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
 
