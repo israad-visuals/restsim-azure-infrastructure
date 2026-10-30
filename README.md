@@ -1,3 +1,5 @@
+![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-status.svg)
+
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
 
 ## Business Context
@@ -118,5 +120,3 @@ I gave development its own monitoring workspace and notifications so developers 
 | Architecture | Seven diagrams with network paths, identity boundaries, release flows and monitoring decisions. |
 | Deployment controls | Separate local state, ignored environment inputs, SSH-key authentication and scoped deployment identities. |
 | Cost planning | A [resource-by-resource cost review](docs/costs/README.md), calculation CSV and dated retail-rate snapshot. |
-
-![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-status.svg)
