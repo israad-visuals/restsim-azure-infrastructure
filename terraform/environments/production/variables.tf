@@ -73,9 +73,9 @@ variable "private_management_cidrs" {
   default     = []
   validation {
     condition = alltrue([for c in var.private_management_cidrs :
-      can(cidrnetmask(c)) && !contains(["0.0.0.0/0", "::/0"], c)
+      try(cidrhost(c, 0) == split("/", c)[0] && !contains(["0.0.0.0", "128.0.0.0"], cidrnetmask(c)), false)
     ])
-    error_message = "Enter specific IPv4 ranges for private access. Do not use 0.0.0.0/0."
+    error_message = "Use IPv4 network addresses for private access, without host bits or /0-/1 ranges."
   }
 }
 variable "approved_outbound_https_cidrs" {
@@ -83,8 +83,10 @@ variable "approved_outbound_https_cidrs" {
   type        = list(string)
   default     = []
   validation {
-    condition     = alltrue([for c in var.approved_outbound_https_cidrs : can(cidrnetmask(c)) && c != "0.0.0.0/0"])
-    error_message = "Enter specific IPv4 destination ranges. Do not use 0.0.0.0/0."
+    condition = alltrue([for c in var.approved_outbound_https_cidrs :
+      try(cidrhost(c, 0) == split("/", c)[0] && !contains(["0.0.0.0", "128.0.0.0"], cidrnetmask(c)), false)
+    ])
+    error_message = "Use IPv4 destination network addresses, without host bits or /0-/1 ranges."
   }
 }
 variable "cloudflare_ipv4_cidrs" {
@@ -109,7 +111,7 @@ variable "cloudflare_ipv4_cidrs" {
   ]
   validation {
     condition = length(var.cloudflare_ipv4_cidrs) > 0 && alltrue([
-      for c in var.cloudflare_ipv4_cidrs : can(cidrnetmask(c)) && c != "0.0.0.0/0"
+      for c in var.cloudflare_ipv4_cidrs : try(cidrhost(c, 0) == split("/", c)[0] && !contains(["0.0.0.0", "128.0.0.0"], cidrnetmask(c)), false)
     ])
     error_message = "Enter specific Cloudflare IPv4 ranges."
   }
