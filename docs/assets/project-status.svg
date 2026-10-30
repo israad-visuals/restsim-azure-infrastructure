@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="218" viewBox="0 0 1200 218" role="img" aria-labelledby="title description">
-  <title id="title">RestSim project progress</title>
-  <desc id="description">Architecture complete. Production Terraform validated locally. Azure deployment is the next milestone. Operational verification follows deployment.</desc>
+  <title id="title">RestSim project at a glance</title>
+  <desc id="description">Seven architecture diagrams. Two Terraform environments. Fifty-two cost calculation lines. Seven technical design guides.</desc>
   <style>
     text { font-family: Arial, Helvetica, sans-serif; }
     .label { font-size: 19px; font-weight: 700; fill: #0e1b2e; text-anchor: middle; }
@@ -15,27 +15,26 @@
     }
   </style>
   <rect x="1" y="1" width="1198" height="216" rx="18" fill="#f8fafc" stroke="#ddf8ee" stroke-width="2"/>
-  <text x="32" y="40" font-size="18" font-weight="700" fill="#0e1b2e">Project progress</text>
+  <text x="32" y="40" font-size="18" font-weight="700" fill="#0e1b2e">Project at a glance</text>
   <rect x="922" y="19" width="246" height="34" rx="17" fill="#ddf8ee"/>
-  <text x="1045" y="41" font-size="14" font-weight="700" fill="#007e53" text-anchor="middle">NEXT · AZURE DEPLOYMENT</text>
-  <path d="M120 107H1080" fill="none" stroke="#d4dfe5" stroke-width="3"/>
+  <text x="1045" y="41" font-size="14" font-weight="700" fill="#007e53" text-anchor="middle">DESIGN · CODE · COSTS</text>
+  <path d="M120 107H1080" fill="none" stroke="#00975f" stroke-width="3"/>
   <path d="M120 107H440" fill="none" stroke="#00975f" stroke-width="3"/>
-  <path d="M458 107H742" fill="none" stroke="#83c9af" stroke-width="2" stroke-dasharray="5 7"/>
   <circle cx="120" cy="107" r="18" fill="#007e53"/>
   <path d="m112 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="440" cy="107" r="18" fill="#007e53"/>
   <path d="m432 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <circle class="halo" cx="760" cy="107" r="29" fill="#00ad6b"/>
-  <circle cx="760" cy="107" r="18" fill="#ddf8ee" stroke="#007e53" stroke-width="2"/>
-  <circle cx="760" cy="107" r="6" fill="#007e53"/>
-  <circle cx="1080" cy="107" r="18" fill="#f8fafc" stroke="#b7c7d1" stroke-width="2"/>
-  <circle cx="1080" cy="107" r="5" fill="#b7c7d1"/>
+  <circle cx="760" cy="107" r="18" fill="#007e53"/>
+  <path d="m752 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1080" cy="107" r="18" fill="#007e53"/>
+  <path d="m1072 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <text class="label" x="120" y="158">Architecture</text>
-  <text class="status" x="120" y="183">Complete</text>
+  <text class="status" x="120" y="183">7 diagrams</text>
   <text class="label" x="440" y="158">Terraform</text>
-  <text class="status" x="440" y="183">Validated locally</text>
-  <text class="label" x="760" y="158">Azure deployment</text>
-  <text class="status" x="760" y="183">Next milestone</text>
-  <text class="label" x="1080" y="158">Operational checks</text>
-  <text class="status" x="1080" y="183">Upcoming</text>
+  <text class="status" x="440" y="183">2 environments</text>
+  <text class="label" x="760" y="158">Cost review</text>
+  <text class="status" x="760" y="183">52 calculation lines</text>
+  <text class="label" x="1080" y="158">Design guides</text>
+  <text class="status" x="1080" y="183">7 technical guides</text>
 </svg>

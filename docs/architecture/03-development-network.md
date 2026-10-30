@@ -10,13 +10,13 @@ I designed development as the developers' environment for testing and staging Re
 
 **Developer → staging hostname → HTTPS entry point → OAuth2 Proxy and Microsoft Entra ID → RestSim application**
 
-Azure DNS provides the public staging name. OAuth2 Proxy uses Entra ID for sign-in and enforces the development-team access policy before forwarding a request to the application on loopback. The application's upstream port stays private.
+I placed the identity check in front of the application's loopback upstream. The staging access design uses OAuth2 Proxy with Microsoft Entra ID and a development-team access policy. Azure DNS hosting for the staging name is optional in Terraform; the NSG ingress stays closed until the staging-access inputs are enabled.
 
 Entra ID provides the identity and the proxy enforces access. The NSG has a separate role: filtering network traffic. This avoids treating a network rule as a user sign-in system.
 
 ## Why I chose this setup
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | Developers need to test and stage changes without touching production. | Separate development subscription, VNet and service configuration. | Isolates development changes, data and credentials from production. |
 | Developers need a staging URL, with access limited to permitted people. | Public staging DNS with Entra ID and OAuth2 Proxy. | Provides browser-based access with an identity check. |
@@ -31,10 +31,10 @@ Entra ID provides the identity and the proxy enforces access. The NSG has a sepa
 | --- | --- | --- |
 | `vnet-restsim-dev` | `10.30.0.0/22` | Development address space. |
 | Reserved block | `10.30.0.0/24` | Room for later requirements. |
-| `snet-dev-app` | `10.30.1.0/24` | Web/API VM and controlled test background jobs. |
+| `snet-dev-app` | `10.30.1.0/24` | Web/API VM; scheduled provider jobs are disabled in its runtime configuration. |
 | `snet-dev-data` | `10.30.2.0/24` | Delegated PostgreSQL subnet. |
 | `snet-dev-private-endpoints` | `10.30.3.0/24` | Files and Key Vault private endpoints. |
 
 ## The trade-off
 
-One VM is suitable for routine functional testing, but it does not represent production's multi-instance availability. The design keeps that cost trade-off visible: shared-session behaviour, rolling releases and failover belong to a separate multi-instance validation scope.
+I used one VM for developer staging to keep its footprint smaller. Production keeps the multi-instance web tier, shared sessions and rolling-release design because its availability requirements are different.

@@ -15,13 +15,13 @@ Each environment has four resource groups:
 | Resource group | What belongs here | Why it helps RestSim |
 | --- | --- | --- |
 | Network | VNet, subnets, NSGs, DNS, load balancing and private endpoints | Keeps connectivity and traffic controls together. |
-| Application | Web compute, worker, Key Vault, Compute Gallery and release storage | Keeps the application and its deployment resources easy to find. |
-| Data | PostgreSQL, Azure Files, Redis and backup resources | Separates lasting business data from replaceable servers. |
+| Application | Web compute and Key Vault; production also includes the worker, Compute Gallery and release storage | Keeps the application and its deployment resources easy to find. |
+| Data | PostgreSQL and Azure Files; production also includes Redis and file-backup resources | Separates lasting business data from replaceable servers. |
 | Monitoring | Application Insights, Log Analytics, collection and alert rules | Gives operations one place to investigate the workload. |
 
 ## Why I chose these services
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | One server failure can interrupt the whole service. | VMSS with two web instances across availability zones and Standard Load Balancer. | Spreads requests across healthy instances and reduces dependence on one server. |
 | Growing traffic puts more work on the same VPS. | CPU-based VMSS autoscaling. | Adds web capacity when demand grows, within a configured maximum. |

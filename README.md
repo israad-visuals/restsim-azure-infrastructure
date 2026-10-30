@@ -8,9 +8,9 @@
 | :---: | :---: | :---: |
 | [![Visit the RestSim website](docs/product/website-badge.svg)](https://restsim.com) | [![Download on the App Store](docs/product/app-store-link.svg)](https://apps.apple.com/app/id6786134566) | [![Get it on Google Play](docs/product/google-play-link.svg)](https://play.google.com/store/apps/details?id=com.restsim.app) |
 
-This project uses RestSim's requirements to design and build an Azure environment with separate development and production configurations.
+I translated RestSim's single-server requirements into an Azure architecture, separate production and development Terraform configurations, and an itemised cost model.
 
-**Contents:** [Business problem](#business-problem) · [My contribution](#my-contribution) · [Landing zone](#landing-zone) · [Architecture diagrams](#architecture-diagrams) · [Design guides](docs/architecture/README.md) · [Current work](#current-work) · [Staged approach](#staged-approach) · [Cost review](docs/costs/README.md)
+**Contents:** [Business problem](#business-problem) · [My contribution](#my-contribution) · [Landing zone](#landing-zone) · [Architecture diagrams](#architecture-diagrams) · [Design guides](docs/architecture/README.md) · [Implementation](#implementation) · [Cost review](docs/costs/README.md)
 
 ## Business problem
 
@@ -18,13 +18,14 @@ RestSim runs on one VPS to keep costs low, but relying on one server creates a r
 
 ## My contribution
 
-I studied RestSim's current infrastructure and researched improvements based on its application requirements. I turned those requirements into an Azure architecture and production Terraform configuration, focusing on reducing dependence on one server, protecting application data and making infrastructure changes repeatable without unnecessary cost.
+I studied RestSim's current infrastructure and researched improvements based on its application requirements. I turned those requirements into an Azure architecture and separate production and development Terraform configurations, focusing on reducing dependence on one server, protecting application data and making infrastructure changes repeatable without unnecessary cost.
 
-- **Availability and cost:** I designed a multi-instance web tier with VMSS and availability zones to address the single-server failure risk and growing traffic. I kept development smaller instead of duplicating the full production footprint.
-- **Private access and shared data:** I separated public traffic from databases, files and secrets, with private connections and workload identities. Shared data services let the design replace web VMs without tying persistent records, uploads or sessions to one instance.
-- **Repeatable infrastructure:** I translated the architecture into version-controlled Terraform, giving the project a reviewable configuration for networking, compute, data, security, monitoring and backups.
-- **Release consistency and recovery:** I designed a single-package release path around the existing CI checks, with staging, exact version pins and controlled rollout. The design addresses version differences between instances and includes a path to restore a previous compatible release.
-- **Engineering handover:** I created seven draw.io diagrams and supporting explanations so another engineer can trace traffic, understand service choices and connect the architecture to the Terraform implementation.
+- **Architecture:** I mapped the single-server risks to a web scale set, a separate worker and shared database, file and session services.
+- **Infrastructure as code:** I wrote production and development Terraform configurations for networking, compute, private services, identity, monitoring and recovery.
+- **Security:** I defined subnet and NSG rules, private service connections, managed identities and scoped secret access.
+- **Release design:** I mapped the existing application checks into a versioned-package flow, with staging, controlled rollout and a separate worker handover.
+- **Cost analysis:** I calculated 52 cost lines from Microsoft retail rates and compared the smaller development footprint with the production configuration.
+- **Technical documentation:** I created seven draw.io diagrams and guides explaining the resource relationships and engineering decisions.
 
 <details>
 <summary>View the live RestSim product</summary>
@@ -37,7 +38,7 @@ I studied RestSim's current infrastructure and researched improvements based on 
 
 I started with the landing zone to map where resources belong before writing Terraform. The design separates environments and groups resources by network, application, data and monitoring, with access controls and governance around them.
 
-![Azure services in the target design: Azure Virtual Network, VM Scale Sets, Key Vault and Azure Monitor](docs/assets/azure/service-overview.jpg)
+![Azure services in the architecture: Azure Virtual Network, VM Scale Sets, Key Vault and Azure Monitor](docs/assets/azure/service-overview.jpg)
 
 [![RestSim high-level Azure landing-zone design](docs/architecture/01-landing-zone.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=_U4szGZBWyCFBpTj2Gg4#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
@@ -109,17 +110,13 @@ I gave development its own monitoring workspace and notifications so developers 
 
 [Design details](docs/architecture/07-development-monitoring.md) · [Open full-size image](docs/architecture/07-development-monitoring.png) · [Back to diagram table](#architecture-diagrams)
 
-## Current work
+## Implementation
 
-- **Architecture:** seven diagrams and supporting design guides covering the landing zone, networks, delivery and monitoring.
-- **Terraform:** [production configuration](terraform/environments/production/) written for networking, compute, data, security, monitoring and recovery.
+| Area | Repository contents |
+| --- | --- |
+| Infrastructure | Separate [production](terraform/environments/production/) and [development](terraform/environments/development/) Terraform configurations. |
+| Architecture | Seven diagrams with network paths, identity boundaries, release flows and monitoring decisions. |
+| Deployment controls | Separate local state, ignored environment inputs, SSH-key authentication and scoped deployment identities. |
+| Cost planning | A [resource-by-resource cost review](docs/costs/README.md), calculation CSV and dated retail-rate snapshot. |
 
-## Staged approach
-
-The live service stays on its existing VPS. Azure testing uses synthetic data and separate credentials.
-
-1. Deploy a small, isolated scope and check connectivity, access controls, logs and alerts.
-2. Test application deployment, shared sessions and files, scaling and recovery.
-3. Record results and costs before considering any future production migration.
-
-![Project progress: architecture complete; production Terraform validated locally; Azure deployment next; operational checks upcoming.](docs/assets/project-status.svg)
+![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-status.svg)

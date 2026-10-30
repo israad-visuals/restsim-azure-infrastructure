@@ -8,7 +8,7 @@ Deploying to one VPS is different from keeping several web instances and a worke
 
 ## Why I chose each release component
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | Keep the existing application checks. | Reuse Web CI and RQOS rather than create another test suite. | Builds on the existing release work and avoids competing pipelines. |
 | Know exactly what code a release contains. | Source commit SHA, package manifest, version and SHA256. | Connects the deployed payload to its source and identifies the package bytes. |
@@ -28,12 +28,12 @@ Developers test and stage the application in the development environment, isolat
 
 The package contains the application and installation actions. Environment settings and secrets remain separate. The same payload can support web and worker roles with different configuration.
 
-The Terraform rolling policy uses a maximum 50% batch and a five-minute pause. Readiness determines whether the next batch proceeds. The recovery path restores the previous compatible version in the VMSS model and affected instances; database changes have their own compatibility requirements.
+With application installation enabled, the Terraform rolling policy uses a maximum 50% batch and a five-minute pause. Readiness determines whether the next batch proceeds. The recovery path restores the previous compatible version in the VMSS model and affected instances; database changes have their own compatibility requirements.
 
 ## Worker and infrastructure ownership
 
 Web instances have schedulers disabled. Worker handover drains work, stops the old scheduler, confirms ownership and then starts the replacement. This keeps scaling and release changes from multiplying scheduled jobs.
 
-Terraform defines the infrastructure and initial Gallery version. Application delivery owns later version changes, while autoscale owns web instance count. The dashed Gallery arrows show deployment relationships, separate from Cloudflare and customer request traffic.
+Terraform defines the infrastructure and attaches the selected Gallery application-version IDs when application installation is enabled. Application delivery owns later version changes, while autoscale owns web instance count. The dashed Gallery arrows show deployment relationships, separate from Cloudflare and customer request traffic.
 
-The pipeline diagram presents the Azure release extension. Gallery resources and identities provide its infrastructure; package installation and workflow integration are separate parts of implementing that release path.
+I separated the release workflow design from its Terraform resources. Terraform defines Gallery, identities and version attachments. In the release design, the application workflow owns package publishing and release promotion.

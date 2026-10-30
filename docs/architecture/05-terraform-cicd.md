@@ -8,7 +8,7 @@ As RestSim's infrastructure grows beyond one server, changes need to be understa
 
 ## Why I chose these controls
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | Keep infrastructure settings consistent and explainable. | Terraform configuration held in Git. | Makes resource definitions and their history reviewable. |
 | Catch configuration problems before deployment. | Formatting, validation, security checks and a plan preview on pull requests. | Gives the reviewer a view of the change before it reaches an environment. |
@@ -27,10 +27,10 @@ Development and production use different inputs and state, so their plans are se
 
 ## Access and change ownership
 
-The infrastructure identity has scoped resource-group and vault permissions. Subscription-level policies and role assignments have a separate administrative permission requirement. The runner also needs a private network path to protected services.
+The infrastructure identity has scoped resource-group and vault permissions. Subscription-level policies and role assignments have a separate administrative permission requirement. The delivery design places secret-writing jobs on a runner with private connectivity to the protected services.
 
 Terraform owns resource configuration. Autoscale owns the current web instance count, and application delivery owns later Gallery release versions. Keeping those responsibilities explicit prevents an infrastructure change from resetting an application release or undoing a scaling decision.
 
 Infrastructure recovery uses the failed change, resource state and a new reviewed plan. Application rollback and database/file recovery remain separate processes.
 
-I run Terraform from the local deployment machine. Production uses `terraform/environments/production/terraform.tfstate`; development uses `terraform/environments/development/terraform.tfstate`. These files and their backups stay out of Git. Local state remains on this machine; GitHub-hosted infrastructure runs would need a persistent state arrangement before use.
+I use local Terraform state for the current deployment workflow: `production/terraform.tfstate` and `development/terraform.tfstate`, under their respective environment folders. State and its protected backups stay out of Git. The delivery diagram describes the pull-request and promotion workflow; local state belongs to the deployment machine.

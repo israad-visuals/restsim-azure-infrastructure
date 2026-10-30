@@ -16,7 +16,7 @@ From there, the application reaches PostgreSQL for records, Azure Files for shar
 
 ## Why I chose each network component
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | Keep the existing customer-facing entry point. | Cloudflare in front of the Azure origin. | Avoids changing the public access approach while adding Azure compute behind it. |
 | Share requests across several web servers. | Standard Load Balancer with a readiness probe. | Routes new connections to healthy backends instead of relying on one VPS. |
@@ -41,6 +41,6 @@ I used a `/22` VNet to contain the three clearly numbered `/24` subnets and one 
 
 ## Traffic controls
 
-The configuration allows customer-facing TCP 80/443 from the configured Cloudflare IPv4 ranges. Database traffic uses TCP 5432; private service paths use HTTPS 443, SMB 445 and encrypted Redis 10000. The load balancer has a separate readiness listener on HTTP 8081.
+The configuration allows customer-facing TCP 80/443 from the configured Cloudflare IPv4 ranges. Database traffic uses TCP 5432; private service paths use HTTPS 443, SMB 445 and encrypted Redis 10000. The load balancer probes web-backend readiness over HTTP on port 8081.
 
 NSGs control addresses and ports. NAT supplies outbound connectivity, while the origin certificate and application identity controls handle their own responsibilities. The design keeps those controls separate rather than expecting one network component to provide every form of security.

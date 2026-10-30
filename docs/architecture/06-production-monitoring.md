@@ -8,7 +8,7 @@ RestSim already has server-health monitoring. Moving to several application inst
 
 ## Why I chose each monitoring component
 
-| RestSim requirement | Design choice | Intended improvement |
+| RestSim requirement | Design choice | Why this fits RestSim |
 | --- | --- | --- |
 | Understand which requests or dependencies are failing. | Application Insights with application instrumentation. | Adds application-level context beyond CPU and server availability. |
 | Investigate several VMs and services together. | A shared Log Analytics workspace. | Provides one query location for the collected logs. |
@@ -35,12 +35,12 @@ The seven metric rules evaluate every minute over a 15-minute window:
 | VMSS and worker CPU | Average above 85%, in separate rules. | Separates web capacity pressure from background-job pressure. |
 | Load-balancer probe health | Average `DipAvailability` below `0.99`. | Highlights unhealthy application backends. |
 
-A separate Resource Health rule covers degraded, unavailable and unknown states. The probe threshold represents backend health, rather than a measured customer-uptime target.
+A separate Resource Health rule covers degraded, unavailable and unknown states. I use the probe signal to identify unhealthy web backends.
 
 ## Operational and cost decisions
 
 The workspace keeps logs for 30 days with a 5 GB/day ingestion cap. The cap limits ingestion, with a trade-off of missing logs if it is reached; it is not a total spending limit. Application Insights is configured for 100% sampling.
 
-An alert starts an investigation. The useful connection is between the failure time, affected dependency, VM events and release version. Credentials, payment details, activation codes and customer information are excluded from the intended telemetry content.
+I organised monitoring around the failure time, affected dependency, VM events and release version. My telemetry requirements exclude credentials, payment details, activation codes and customer information.
 
-Terraform defines the monitoring resources and collection rules. Application instrumentation supplies request-level telemetry; installing the VM agent alone does not add that application context.
+Terraform defines the workspace, collection rules and alerts. Application instrumentation supplies request and dependency telemetry, while the VM agent collects guest events.
