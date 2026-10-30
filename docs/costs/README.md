@@ -1,10 +1,10 @@
-# Infrastructure cost review
+# Cost planning and resource choices
 
 [Project overview](../../README.md) · [Architecture](../architecture/README.md)
 
-I priced the production and development Terraform configurations to understand what the availability, private networking and monitoring choices would cost. The production footprint is substantially larger than development, mainly because it includes three application VMs and a PostgreSQL standby.
+I reviewed the cost of each Terraform resource to see where RestSim's availability and security requirements added ongoing expense. I kept production's redundant application and data tiers, then used a smaller development footprint to avoid paying for the same capacity twice.
 
-**Pricing checked: October 29, 2026. All amounts below are CAD, before tax.** These are retail estimates for the configuration, not a record of money spent.
+**Estimated monthly cost: CAD 1,007 for production and CAD 115 for development.** Prices were checked on October 29, 2026, using Microsoft's CAD retail rates, 730 running hours and the usage volumes listed below. Totals are before tax and credits.
 
 ## Monthly estimate
 
@@ -15,21 +15,75 @@ I priced the production and development Terraform configurations to understand w
 | Both environments | 970.22 | 151.65 | **1,121.87** |
 | Production with four web VMs for the whole month | 1,097.84 | 136.72 | **1,234.56** |
 
-The four-web-VM case holds traffic and log volume constant to show the compute difference. A busier application can also increase usage charges.
+The four-web-VM comparison isolates the extra compute and disks; traffic and log allowances are held constant.
 
-**The CAD 50 budget is an alert threshold, not the cost of this architecture or a spending cap.** It also covers the subscription, including unrelated resources. Continuous operation of either environment exceeds it. I would use short, planned deployment windows rather than leave this footprint running on student credits.
+## Where the production cost goes
 
-## Pricing basis
+| Cost area | CAD/month |
+| --- | ---: |
+| Application VMs and OS disks | 341.22 |
+| PostgreSQL primary, standby, storage and backup | 368.34 |
+| Redis with high availability | 33.14 |
+| Networking, private endpoints, DNS and egress | 144.01 |
+| Logs, alerts and secret operations | 99.16 |
+| Files, release blobs, snapshots and protection | 21.21 |
+| **Production total** | **1,007.08** |
+
+Application and database compute account for **CAD 651.45/month**, about 65% of the estimate. That makes workload sizing the largest cost decision. Logs add another **CAD 97.74/month** at the assumed 30 GB ingestion volume.
+
+## How I kept costs lower
+
+| Decision | Cost effect | Service requirement I kept |
+| --- | --- | --- |
+| Give development its own smaller footprint | **CAD 892.29/month less** than duplicating the production footprint, under this model. | An isolated environment with its own database, files, secrets and monitoring. |
+| Use one B2als_v2 VM and B1ms PostgreSQL in development | Development compute is **CAD 62.34/month**; it does not carry the production worker, Redis, load balancer or HA standby. | Developers can stage changes separately, while production keeps its redundant tiers. |
+| Start the production web tier at two instances | The baseline avoids the **CAD 227.48/month** compute-and-disk cost of keeping four web VMs running all month. Autoscaling can still add capacity up to four. | Two web instances across zones, with load-balancer health probes. |
+| Use smaller disks and LRS storage in development | One 32 GiB Standard SSD costs **CAD 3.74/month**; file capacity is billed on occupied data. | Private file access and seven-day file soft deletion. Production keeps Premium OS disks and ZRS shared files. |
+| Keep development telemetry lighter | A 25% Application Insights sampling setting, warning/error syslog collection and 30-day workspace retention reduce the collection footprint. | Separate Linux and service logs, CPU/storage alerts and email notifications. |
+| Use managed identities and OIDC federation | Managed identity and federation have no additional service fee in this design. | Scoped Azure access without storing long-lived deployment passwords in GitHub. |
+
+The **CAD 892.29** comparison is estimated cost avoidance: `1,007.08 − 114.79`. Using one production footprint plus a smaller development environment comes to CAD 1,121.87/month, compared with CAD 2,014.16 for two copies of the production cost model. Production and development are sized for different capacity and availability requirements.
+
+## Keeping the production service requirements
+
+I kept two web instances across availability zones, a separate worker, PostgreSQL zone-redundant HA and Redis HA in the production configuration. Those resources account for much of the cost, but address the original single-server failure risk and keep background processing separate from web requests.
+
+I also retained private database connectivity, private endpoints for shared services, Key Vault, managed identities, TLS requirements, monitoring and file backups. Cost reductions in development come mainly from smaller capacity and less redundancy. The smaller environment still keeps its network and data separate from production.
+
+I would base further size reductions on CPU, memory, database-load and recovery measurements, keeping the production availability requirements in place.
+
+## Deployment windows and budget control
+
+The configured **CAD 50 subscription budget sends alerts**. It does not stop resources, and the full architecture is not sized to run continuously within that amount. I use the fixed-cost estimate to plan deployment windows and account separately for logs, traffic and retained storage.
+
+| Scenario | Estimated cost |
+| --- | ---: |
+| Production fixed footprint for six hours | **CAD 7.15**, plus usage and retention |
+| Production fixed footprint for 24 hours | **CAD 28.61**, plus usage and retention |
+| Development compute active 176 hours/month | **CAD 67.48/month**, including full-month storage/network and the same usage allowance |
+
+Short-window figures prorate the monthly fixed charges. Billing-hour rounding, provisioning/deletion time and DNS daily billing affect the final amount. The 176-hour example requires VM deallocation and database stop/start; that schedule is a cost option, not an implemented automation.
+
+Stopping a VM does not remove disks, public IPs, private endpoints, DNS zones or stored backups. I include those resources in cleanup planning, along with file snapshots, soft-deleted data and retained Blob versions. PostgreSQL automatically starts again after seven stopped days.
+
+## Calculation detail
+
+The [calculation CSV](monthly-estimate.csv) contains **52 line items**. The [rate snapshot](retail-rates.json) contains **44 selected meters** with their currency, units, regions, effective dates and source URLs. Every line is `quantity × unit rate`; totals use unrounded amounts.
+
+<details>
+<summary>Resource sizes, rates and monthly calculations</summary>
+
+### Pricing basis
 
 - **730 hours per month**, Linux pay-as-you-go; no Spot pricing, reservations, savings plans, student credits or negotiated discounts deducted.
-- **Production: East US**, matching the current `location` input/default. **Development: Canada Central**, matching its default. These are pricing references; the student subscription's region restrictions still need to be resolved before another deployment. A new region requires a new estimate.
+- **Production: East US**, matching the current `location` input/default. **Development: Canada Central**, matching its default. The estimate follows those region settings; changing the deployment region changes the pricing baseline.
 - Rates came from Microsoft's Retail Prices API in **CAD**, without a separate currency conversion. Global/Zone 1 network and DNS meters apply where the catalog lists them that way.
 - Storage and traffic volumes below are planning assumptions. They are not measured RestSim usage. The estimate includes full compute provisioning with `deploy_compute = true`; turning application installation off does not turn off the infrastructure charges.
 - The StandardV2 egress IP allowance uses the Standard IPv4 meter at **CAD 0.0071/hour**, contributing CAD 5.18/month.
 
 I saved the [52 calculation lines](monthly-estimate.csv) and [44 selected retail meters](retail-rates.json), including meter IDs, units, regions, effective dates and lookup URLs. Each CSV amount is `quantity × unit_rate_cad`; totals use unrounded line amounts.
 
-## Production: fixed footprint
+### Production: fixed footprint
 
 These charges continue while the corresponding resources remain provisioned, even when customer traffic is low.
 
@@ -56,7 +110,7 @@ The two load-balancing rules fit inside the first-five-rules hourly bundle; I co
 
 The backup policy uses **snapshot backup**, with daily retention of 30 days and weekly retention of 12 weeks. The protected storage account is below 250 GiB in this scenario, so the management fee is `60% × CAD 7.0828 = CAD 4.25/month`. File snapshots are billed separately in the source storage account. The vault's ZRS setting does not add a second copy of snapshot storage in this calculation.
 
-## Production: usage allowance
+### Production: usage allowance
 
 | Item | Assumed monthly usage | CAD/month |
 | --- | --- | ---: |
@@ -75,11 +129,11 @@ The backup policy uses **snapshot backup**, with daily retention of 30 days and 
 | Internet egress allowance | 100 GB × 0.1232 | 12.32 |
 | **Usage subtotal** | Calculated before rounding | **136.72** |
 
-The **100 GiB file-share quota is a limit**, not a reservation billed in full. I assumed the share is full for this example. A share holding 10 GiB costs less for capacity. Snapshots store differential data, so 30 daily backups do not automatically mean 30 full copies. The 50 GiB snapshot allowance must be replaced with observed change and retention volume.
+The **100 GiB file-share quota is a limit**, not a reservation billed in full. I assumed the share is full for this example. A share holding 10 GiB costs less for capacity. Snapshots store differential data, so 30 daily backups do not automatically mean 30 full copies. The 50 GiB snapshot allowance represents retained changed data in this cost scenario.
 
 For PostgreSQL, I assumed a 32 GiB local backup set. Geo-redundancy doubles that footprint, with a 32 GiB primary-storage allowance: `max(2 × 32 − 32, 0) × 0.1346 = CAD 4.31`. Retention is 35 days; actual backup volume depends on database size and write activity, not retention alone.
 
-## Development
+### Development
 
 I kept development smaller: one burstable VM, one burstable PostgreSQL server, LRS file storage and two private endpoints. It has no separate worker VM, Redis, load balancer, NAT Gateway, production backup vault or release-storage account.
 
@@ -102,33 +156,17 @@ The development backup assumption is 16 GiB, within its 32 GiB included allowanc
 
 Optional Azure-hosted staging DNS is disabled by default. Enabling one public zone adds **CAD 0.7083/month**, plus CAD 0.5666 per million queries. The public IP is allocated in the current code even when staging ingress is closed, so its charge is already included.
 
-## Monitoring and traffic
+### Monitoring and traffic
 
 I counted Application Insights telemetry, Linux logs and service diagnostics inside each environment's total ingestion allowance. I did not charge for Application Insights ingestion a second time. Thirty-day workspace retention is inside the included Analytics retention period.
 
 The model conservatively does **not** subtract shared free allowances: 5 GB/month of Analytics ingestion at billing-account scope, ten metric-alert time series, or the first 100 GB/month of eligible Internet egress. Other workloads can consume them. Email notifications are assumed to remain within the included 1,000/month. Production has seven metric rules and development has two; Resource Health uses a separately free Activity Log alert.
 
-Production's 5 GB/day workspace cap is much higher than the 30 GB/month assumption. At 5 GB/day for a 30-day month, 150 GB would cost **CAD 488.72** in ingestion before free allowances. Development's 0.5 GB/day at the same duration gives 15 GB, or **CAD 58.65**. A daily cap is a safeguard and can overshoot; it is not a guaranteed bill ceiling. Sampling must work in the application, and diagnostic collection needs review as volumes grow.
+Production's 5 GB/day workspace cap is much higher than the 30 GB/month assumption. At 5 GB/day for a 30-day month, 150 GB would cost **CAD 488.72** in ingestion before free allowances. Development's 0.5 GB/day at the same duration gives 15 GB, or **CAD 58.65**. A daily cap is a safeguard and can overshoot; it is not a guaranteed bill ceiling. Application sampling and selected diagnostic categories determine the collected volume.
 
 Traffic quantities are separate meter counters, not distinct customer downloads. One transfer can incur both a network service's processing fee and Internet egress. NAT includes outbound traffic and its replies; Load Balancer includes both directions; Private Link includes traffic across its endpoints. Cloudflare caching can reduce origin traffic, but traffic sent from Azure to Cloudflare can still incur Azure egress. No caching savings are assumed here.
 
-## Short deployments and scaling
-
-| Scenario | Calculated estimate | What it includes |
-| --- | ---: | --- |
-| Production fixed footprint for 1 hour | CAD 1.19 | Monthly fixed subtotal ÷ 730 |
-| Production fixed footprint for 6 hours | CAD 7.15 | Same hourly basis |
-| Production fixed footprint for 24 hours | CAD 28.61 | Same hourly basis |
-| Development compute active 176 hours/month | CAD 67.48/month | Full-month disks/network/storage and unchanged usage allowance |
-| Two extra web VMs for a whole month | **+CAD 227.48** | Two D2s_v5 VMs and two P6 disks |
-
-The short-window figures are **prorated fixed-cost baselines, not full invoice quotes**. Add traffic, logs, retained data and time spent provisioning or deleting. Some services round partial hours up, and DNS zones are prorated daily. Backup protection and retention can extend the chargeable lifetime.
-
-The 176-hour development scenario assumes both VM deallocation and database stop/start outside working hours; that schedule is **not implemented in Terraform**. A guest OS shutdown alone does not deallocate a VM. PostgreSQL automatically starts again after seven stopped days.
-
-Extra VMSS compute costs CAD 0.136 per VM-hour. Two additional web VMs add CAD 0.272/hour in compute, plus their disks while those disks exist. The initial two web VMs are already the minimum in the current code, so setting the maximum to two only avoids future scale-out charges.
-
-## Other services and costs outside the total
+### Other services and costs outside the total
 
 | Component | Treatment |
 | --- | --- |
@@ -143,21 +181,7 @@ Extra VMSS compute costs CAD 0.136 per VM-hour. Two additional web VMs add CAD 0
 | Cloudflare DNS/CDN and Access | The existing Cloudflare subscription, Access seats and add-ons sit outside this Azure estimate. Terraform does not purchase a Cloudflare plan. Published free tiers are subject to their user and feature limits. |
 | RestSim business services | Existing VPS, domains, telecom-provider API purchases, payments, email/SMS services, app-store fees, support plans, tax and engineering time are outside this Azure infrastructure estimate. |
 
-## Cost decisions
-
-I kept the development environment separate and smaller rather than duplicate production HA. Production's three VM compute charges and database compute total **CAD 651.45/month**, roughly 65% of the working estimate, so these are the first sizes to review against measured workload needs.
-
-- Keep the existing private access, identities, TLS and backup intent when reviewing costs. Opening data services to the Internet would change the security design.
-- Use measured CPU, memory, database load and recovery needs before reducing sizes. Burstable development sizes are not evidence that the same size will handle production demand.
-- Keep production deployments time-limited while using student credits. Disabling application installation or OIDC does not remove the database, Redis, NAT or private-endpoint charges.
-- Review diagnostic categories, application sampling, artifact versions and file churn. Logs are the largest assumed usage charge in this estimate.
-- Avoid long-term reservations until region eligibility, capacity and sustained usage are known. No reservation savings are included.
-
-## Cleanup and actual spending
-
-Stopping compute does not remove disk, IP, endpoint, DNS, storage or backup charges. A retained Recovery Services backup, file snapshot, soft-deleted data or Blob version can continue consuming billable storage. Production deletion guards, backup protection and retention need deliberate handling during cleanup; there is no automatic shutdown or cleanup mechanism in the configuration.
-
-The earlier Azure resource cleanup was verified. That run's actual cost has not been reconciled against a billing export. I have not used these monthly estimates as a claim about the amount spent or saved. A cost record needs the deployment window, billed meter quantities and credits shown separately.
+</details>
 
 <details>
 <summary>Pricing sources and calculation evidence</summary>
