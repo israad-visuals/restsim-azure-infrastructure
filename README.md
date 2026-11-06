@@ -1,6 +1,6 @@
 ## Executive summary
 
-To address availability and scalability risks in RestSim’s single-VPS setup, I designed a migration to Azure Virtual Machine Scale Sets and wrote the infrastructure in Terraform. The architecture uses Standard Load Balancer to distribute web traffic, a separate worker for background jobs, and shared PostgreSQL and Azure Files services. Key Vault and Azure Monitor support secret management and monitoring, with separate production and development environments.
+To address the availability and scalability limits of RestSim’s single-VPS setup, I designed Azure infrastructure using Terraform. The design uses Virtual Machine Scale Sets and Standard Load Balancer to spread web traffic across instances, with a separate worker and shared PostgreSQL and Azure Files services. It also adds private networking, Key Vault and Azure Monitor, with separate production and development environments. I kept development smaller and started the web tier at two instances to control costs while improving availability.
 
 ![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-at-a-glance.svg)
 
