@@ -1,6 +1,6 @@
 ## Executive summary
 
-RestSim runs its travel eSIM platform on a single VPS, creating a single point of failure and limiting room to scale. I designed an Azure architecture and wrote Terraform for separate production and development environments, using VM Scale Sets, Standard Load Balancer, PostgreSQL, Key Vault and Azure Monitor. The design spreads web traffic across instances, separates background jobs and gives data services private network access, with a smaller development environment to control costs.
+RestSim runs its travel eSIM platform on one VPS, which creates limits around scalability, availability, fault tolerance and disaster recovery. I reviewed the existing infrastructure and designed an Azure architecture using Virtual Machine Scale Sets, Standard Load Balancer, private networking and central monitoring to address those risks. I implemented the design in Terraform and tested provisioning in Azure, documenting the deployment results and subscription restrictions.
 
 ![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-at-a-glance.svg)
 
