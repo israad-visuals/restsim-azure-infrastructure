@@ -16,8 +16,6 @@
   </style>
   <rect x="1" y="1" width="1198" height="216" rx="18" fill="#f8fafc" stroke="#ddf8ee" stroke-width="2"/>
   <text x="32" y="40" font-size="18" font-weight="700" fill="#0e1b2e">Project at a glance</text>
-  <rect x="922" y="19" width="246" height="34" rx="17" fill="#ddf8ee"/>
-  <text x="1045" y="41" font-size="14" font-weight="700" fill="#007e53" text-anchor="middle">DESIGN · CODE · COSTS</text>
   <path d="M120 107H1080" fill="none" stroke="#00975f" stroke-width="3"/>
   <circle cx="120" cy="107" r="18" fill="#007e53"/>
   <path d="m112 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
