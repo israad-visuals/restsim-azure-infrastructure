@@ -1,10 +1,12 @@
 ## Executive summary
 
-RestSim runs its travel eSIM platform on one VPS, which creates limits around scalability, availability, fault tolerance and disaster recovery. I reviewed the existing infrastructure and designed an Azure architecture using Virtual Machine Scale Sets, Standard Load Balancer, private networking and central monitoring to address those risks. I implemented the design in Terraform and tested provisioning in Azure, documenting the deployment results and subscription restrictions.
-
-![Project at a glance: seven architecture diagrams, two Terraform environments, 52 cost calculation lines and seven design guides.](docs/assets/project-at-a-glance.svg)
+RestSim runs its travel eSIM platform on one VPS, which creates limits around scalability, availability, fault tolerance and disaster recovery. I reviewed the existing infrastructure and designed an Azure architecture using Virtual Machine Scale Sets, Standard Load Balancer, private networking and central monitoring to address those risks. I deployed the infrastructure in Azure using Terraform and documented the deployment results and subscription restrictions.
 
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
+
+![Project at a glance: seven architecture diagrams, seven design guides, 52 cost calculation lines, two Terraform environments and infrastructure deployed in Azure.](docs/assets/project-at-a-glance.svg)
+
+[![Click here to view Azure and Terraform deployment screenshot evidence](docs/assets/deployment-evidence-banner.svg)](#azure-deployment)
 
 ## Business Context
 
@@ -16,7 +18,7 @@ RestSim runs its travel eSIM platform on one VPS, which creates limits around sc
 
 I translated RestSim's single-server requirements into an Azure architecture, separate production and development Terraform configurations, and an itemised cost model.
 
-**Contents:** [Business problem](#business-problem) · [My contribution](#my-contribution) · [Landing zone](#landing-zone) · [Architecture diagrams](#architecture-diagrams) · [Design guides](docs/architecture/README.md) · [Implementation](#implementation) · [Cost review](docs/costs/README.md)
+**Contents:** [Business problem](#business-problem) · [My contribution](#my-contribution) · [Landing zone](#landing-zone) · [Architecture diagrams](#architecture-diagrams) · [Design guides](docs/architecture/README.md) · [Implementation](#implementation) · [Azure Deployment](#azure-deployment) · [Deployment review](#deployment-review) · [Cost review](docs/costs/README.md)
 
 ## Business problem
 
@@ -50,7 +52,7 @@ I started with the landing zone to map where resources belong before writing Ter
 
 [Open full-size architecture](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=_U4szGZBWyCFBpTj2Gg4#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
-Production uses multiple application instances with shared data services and a separate background worker. Development gives developers an isolated, smaller environment to test and stage application changes before a production release. Managed identities, Key Vault and central monitoring support both access control and operations.
+The production design uses multiple application instances with shared data services and a separate background worker. Development gives developers an isolated, smaller environment to test and stage application changes before a production release. Managed identities, Key Vault and central monitoring support both access control and operations.
 
 [Read the landing-zone decisions: resource ownership, reliability, governance and cost](docs/architecture/01-landing-zone.md).
 
@@ -72,7 +74,7 @@ Production uses multiple application instances with shared data services and a s
 
 [![RestSim production network design](docs/architecture/02-production-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
-I kept Cloudflare as RestSim's public entry point and placed Standard Load Balancer in front of the VMSS to spread requests across healthy web instances. The application and worker use private connections to PostgreSQL, Files, Redis and Key Vault. Separate subnets and NSG rules control the permitted paths.
+I kept Cloudflare in the Azure design as RestSim's public entry point and placed Standard Load Balancer in front of the VMSS to spread requests across healthy web instances. The network configuration gives the application and worker private connections to PostgreSQL, Files, Redis and Key Vault. Separate subnets and NSG rules control the permitted paths.
 
 [Design details](docs/architecture/02-production-network.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=FVyJa8Ms7tz5EjTs3-nd#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
@@ -80,7 +82,7 @@ I kept Cloudflare as RestSim's public entry point and placed Standard Load Balan
 
 [![RestSim development network design](docs/architecture/03-development-network.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
-I designed development as the developers' isolated environment for testing and staging application changes before a production release. Separate networking, data and credentials keep it apart from production. Developers access the staging URL through Microsoft Entra ID and OAuth2 Proxy, while one VM keeps the development footprint smaller.
+I designed development as the developers' isolated environment for testing and staging application changes before a production release. Separate networking, data and credentials keep it apart from production. The staging access design uses Microsoft Entra ID and OAuth2 Proxy, while one VM keeps the development footprint smaller.
 
 [Design details](docs/architecture/03-development-network.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dXpRaSZKOgxavGIHGhGw#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
@@ -118,9 +120,123 @@ I gave development its own monitoring workspace and notifications so developers 
 
 ## Implementation
 
-| Area | Repository contents |
+| Area | Work completed |
 | --- | --- |
-| Infrastructure | Separate [production](terraform/environments/production/) and [development](terraform/environments/development/) Terraform configurations. |
-| Architecture | Seven diagrams with network paths, identity boundaries, release flows and monitoring decisions. |
-| Deployment controls | Separate local state, ignored environment inputs, SSH-key authentication and scoped deployment identities. |
-| Cost planning | A [resource-by-resource cost review](docs/costs/README.md), calculation CSV and dated retail-rate snapshot. |
+| Architecture | Seven draw.io diagrams with service choices, traffic paths and environment boundaries explained in the design guides. |
+| Infrastructure as code | Separate [production](terraform/environments/production/) and [development](terraform/environments/development/) configurations for networking, compute, data, identity and monitoring; production also includes shared sessions, artifact delivery and recovery resources. |
+| Deployment controls | Local state, ignored environment inputs, SSH-key authentication and separate controls for infrastructure provisioning and application installation. |
+| Validation and troubleshooting | Terraform checks, an Azure execution plan, subscription-policy and quota investigation, and verified resource cleanup. |
+
+# Azure Deployment
+
+**I successfully deployed the RestSim infrastructure to Azure using Terraform.** I verified that both VM Scale Set instances were running and that PostgreSQL high availability showed a **Healthy** status. The screenshots below show the Terraform apply result and the deployed resources in Azure.
+
+**Azure resource groups**
+
+![Azure portal shows the four RestSim resource groups in Mexico Central](docs/assets/deployment/azure-resource-groups.png)
+
+**Terraform apply**
+
+![Terraform terminal shows the final apply completed with 19 added, 0 changed and 0 destroyed](docs/assets/deployment/terraform-apply.png)
+
+**VM Scale Set instances**
+
+![Azure portal shows both VM instances Running with provisioning Succeeded](docs/assets/deployment/virtual-machine-scale-set.png)
+
+### Azure resource details
+
+**VM Scale Set overview**
+
+![Azure scale set overview shows two running instances, zones 1 and 3, and autoscale](docs/assets/deployment/virtual-machine-scale-set-overview.png)
+
+**PostgreSQL high availability**
+
+![Azure PostgreSQL shows the Healthy availability status in Same zone mode](docs/assets/deployment/postgresql-high-availability.png)
+
+**Key Vault private endpoint**
+
+![Azure reports an Approved connection on the Key Vault private endpoint](docs/assets/deployment/key-vault-private-endpoint.png)
+
+**PostgreSQL overview**
+
+![PostgreSQL Flexible Server overview in Azure](docs/assets/deployment/postgresql-overview.png)
+
+**Load balancer health probe**
+
+![Azure Load Balancer HTTP readiness probe configuration](docs/assets/deployment/load-balancer-health-probe.png)
+
+**Azure Files backup**
+
+![Azure Files backup protection and status](docs/assets/deployment/azure-files-backup.png)
+
+**Network resource group**
+
+![Azure network resource group inventory](docs/assets/deployment/network-resource-group.png)
+
+### Azure Portal walkthrough
+
+**Production resource groups**
+
+![Production resource groups in the Azure Portal](docs/assets/deployment/portal-production-resource-groups.png)
+
+**Application resource group**
+
+![Azure application resource group inventory](docs/assets/deployment/portal-app-resource-group.png)
+
+**Data resource group**
+
+![Azure data resource group overview](docs/assets/deployment/portal-data-resource-group.png)
+
+**Data resources**
+
+![Azure data resource group detail](docs/assets/deployment/portal-data-resource-group-detail.png)
+
+**Monitoring resource group**
+
+![Azure monitoring resource group inventory](docs/assets/deployment/portal-monitoring-resource-group.png)
+
+**Network security rules**
+
+![Azure network security group rules for the application subnet](docs/assets/deployment/portal-app-network-security-rules.png)
+
+### Terraform plan and apply
+
+**Saved plan**
+
+![Terraform saved plan output](docs/assets/deployment/terraform-plan-saved.png)
+
+**Plan summary**
+
+![Terraform plan summary](docs/assets/deployment/terraform-plan-summary.png)
+
+**Apply started**
+
+![Terraform apply started](docs/assets/deployment/terraform-apply-start.png)
+
+**Resource groups created**
+
+![Terraform resource group creation output](docs/assets/deployment/terraform-resource-groups-created.png)
+
+**Private endpoints and backup**
+
+![Terraform private endpoint and backup provisioning output](docs/assets/deployment/terraform-private-endpoints-and-backup.png)
+
+**Retry plan**
+
+![Terraform retry plan summary](docs/assets/deployment/terraform-retry-plan-summary.png)
+
+**PostgreSQL created**
+
+![Terraform PostgreSQL creation output](docs/assets/deployment/terraform-postgresql-created.png)
+
+**Final apply output**
+
+![Terraform final apply output](docs/assets/deployment/terraform-apply-complete.png)
+
+## Deployment review
+
+In an earlier deployment attempt, I reviewed a production Terraform plan with **122 creates, 4 updates and no deletions**. The Azure run created private DNS zones, alerting resources, a budget and policy definitions and assignments. Regional resource creation stopped when Azure enforced the subscription's allowed-region policy.
+
+I traced the restriction to the subscription's policy, checked VM quotas and PostgreSQL access, then completed a reviewed cleanup. Terraform removed **18 tracked entries**, and Azure checks confirmed the project resource groups, budget and custom policies were gone. Unrelated resources were preserved.
+
+[Read the setup, troubleshooting and verified results](docs/operations/deployment-review.md).

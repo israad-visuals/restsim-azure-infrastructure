@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="218" viewBox="0 0 1200 218" role="img" aria-labelledby="title description">
   <title id="title">RestSim project at a glance</title>
-  <desc id="description">Seven architecture diagrams. Two Terraform environments. Fifty-two cost calculation lines. Seven technical design guides.</desc>
+  <desc id="description">Seven architecture diagrams. Seven technical design guides. Fifty-two cost calculation lines. Two Terraform environments. Infrastructure deployed in Azure.</desc>
   <style>
     text { font-family: Arial, Helvetica, sans-serif; }
     .label { font-size: 19px; font-weight: 700; fill: #0e1b2e; text-anchor: middle; }
     .status { font-size: 15px; fill: #536576; text-anchor: middle; }
     .halo { opacity: 0; }
     @media (prefers-reduced-motion: no-preference) {
-      .halo { animation: milestone 2.4s ease-out 2; transform-origin: 760px 107px; }
+      .halo { animation: milestone 2.4s ease-out 2; transform-origin: 600px 107px; }
     }
     @keyframes milestone {
       0% { opacity: .32; transform: scale(.85); }
@@ -19,22 +19,25 @@
   <rect x="922" y="19" width="246" height="34" rx="17" fill="#ddf8ee"/>
   <text x="1045" y="41" font-size="14" font-weight="700" fill="#007e53" text-anchor="middle">DESIGN · CODE · COSTS</text>
   <path d="M120 107H1080" fill="none" stroke="#00975f" stroke-width="3"/>
-  <path d="M120 107H440" fill="none" stroke="#00975f" stroke-width="3"/>
   <circle cx="120" cy="107" r="18" fill="#007e53"/>
   <path d="m112 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="440" cy="107" r="18" fill="#007e53"/>
-  <path d="m432 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle class="halo" cx="760" cy="107" r="29" fill="#00ad6b"/>
-  <circle cx="760" cy="107" r="18" fill="#007e53"/>
-  <path d="m752 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="360" cy="107" r="18" fill="#007e53"/>
+  <path d="m352 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="halo" cx="600" cy="107" r="29" fill="#00ad6b"/>
+  <circle cx="600" cy="107" r="18" fill="#007e53"/>
+  <path d="m592 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="840" cy="107" r="18" fill="#007e53"/>
+  <path d="m832 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="1080" cy="107" r="18" fill="#007e53"/>
   <path d="m1072 107 5 5 10-11" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <text class="label" x="120" y="158">Architecture</text>
   <text class="status" x="120" y="183">7 diagrams</text>
-  <text class="label" x="440" y="158">Terraform</text>
-  <text class="status" x="440" y="183">2 environments</text>
-  <text class="label" x="760" y="158">Cost review</text>
-  <text class="status" x="760" y="183">52 calculation lines</text>
-  <text class="label" x="1080" y="158">Design guides</text>
-  <text class="status" x="1080" y="183">7 technical guides</text>
+  <text class="label" x="360" y="158">Design guides</text>
+  <text class="status" x="360" y="183">7 technical guides</text>
+  <text class="label" x="600" y="158">Cost review</text>
+  <text class="status" x="600" y="183">52 calculation lines</text>
+  <text class="label" x="840" y="158">Terraform</text>
+  <text class="status" x="840" y="183">2 environments</text>
+  <text class="label" x="1080" y="158">Deployed</text>
+  <text class="status" x="1080" y="183">Azure</text>
 </svg>
