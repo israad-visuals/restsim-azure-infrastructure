@@ -4,7 +4,7 @@ RestSim runs its travel eSIM platform on one VPS, which creates limits around sc
 
 [![RestSim project header with the navy-and-green wordmark and green-beanie mascot](docs/product/restsim-azure-header.jpg)](https://restsim.com)
 
-![Project at a glance: seven architecture diagrams, seven design guides, 52 cost calculation lines, two Terraform environments and infrastructure deployed in Azure.](docs/assets/project-at-a-glance.svg)
+![Project at a glance: seven architecture diagrams, seven design guides, 52 cost calculation lines, two Terraform environments and infrastructure deployed in Azure.](docs/assets/restsim-project-at-a-glance.svg)
 
 [![Click here to view Azure and Terraform deployment screenshot evidence](docs/assets/deployment-evidence-banner.svg)](#azure-deployment)
 

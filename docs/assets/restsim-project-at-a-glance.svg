@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="218" viewBox="0 0 1200 218" role="img" aria-labelledby="title description">
-  <title id="title">RestSim project at a glance</title>
+  <title id="title">RestSim infrastructure project at a glance</title>
   <desc id="description">Seven architecture diagrams. Seven technical design guides. Fifty-two cost calculation lines. Two Terraform environments. Infrastructure deployed in Azure.</desc>
   <style>
     text { font-family: Arial, Helvetica, sans-serif; }
