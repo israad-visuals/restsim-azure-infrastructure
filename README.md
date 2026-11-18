@@ -88,6 +88,26 @@ I designed development as the developers' isolated environment for testing and s
 
 ## Application CI/CD
 
+**Implemented — GitHub Actions**
+
+I implemented RestSim's application CI, regression testing and post-deployment smoke checks in GitHub Actions. These workflows check application builds, APIs, database changes, security and browser behaviour.
+
+**Application CI — September 17, 2026**
+
+![GitHub Actions application CI run with all seven jobs passed](docs/assets/cicd/web-ci.png)
+
+**Full regression — September 7, 2026**
+
+![GitHub Actions full regression run with completed test and security checks](docs/assets/cicd/full-regression.png)
+
+**Post-deployment smoke checks — August 27, 2026**
+
+![GitHub Actions smoke run with health, page, API and admin login reachability checks passed](docs/assets/cicd/post-deployment-smoke.png)
+
+**Planned — automated Azure releases**
+
+Automated application releases to Azure are planned as RestSim grows. For now, I am keeping CI and validation in GitHub Actions because the existing workflows already cover those needs. GitHub Actions can also deploy to Azure, so I can extend these workflows when needed without moving to Azure DevOps.
+
 [![RestSim application ci/cd design](docs/architecture/04-application-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
 I designed the Azure release path around RestSim's existing CI and RQOS checks. One versioned package moves through private Blob Storage, Compute Gallery and staging before controlled VMSS rollout. Exact version pins, a separate worker handover and a recovery path keep deployment decisions traceable.
@@ -95,6 +115,8 @@ I designed the Azure release path around RestSim's existing CI and RQOS checks. 
 [Design details](docs/architecture/04-application-cicd.md) · [Open full-size diagram](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=dJ8D57PUJrwz-ndNujR8#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio) · [Back to diagram table](#architecture-diagrams)
 
 ## Terraform CI/CD
+
+I deployed the Azure infrastructure manually with Terraform. Automated Terraform plan and apply workflows will be implemented once the architecture grows.
 
 [![RestSim terraform ci/cd design](docs/architecture/05-terraform-cicd.png)](https://viewer.diagrams.net/?nav=1&title=RestSim%20Azure%20Architecture&page-id=8nira5fFPzOVPsJZNsbC#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fisraad-visuals%2Frestsim-azure-infrastructure%2Fmain%2Fdocs%2Farchitecture%2FRestSim-Azure-Architecture.drawio)
 
